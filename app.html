@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>NSO Research – Peptide App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		body {
+			font-family: sans-serif;
+			margin: 0;
+			background: #111;
+			color: #f0f0f0;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: auto;
+			padding: 20px;
+		}
+
+		header {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		nav {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			flex-wrap: wrap;
+		}
+
+		button {
+			padding: 10px 20px;
+			background: #4facfe;
+			border: none;
+			border-radius: 5px;
+			color: white;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		section {
+			display: none;
+		}
+
+		section.active {
+			display: block;
+		}
+
+		input {
+			padding: 8px;
+			margin: 5px 0;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		.peptide-card,
+		.source-card,
+		.vendor-entry {
+			background: #222;
+			border: 1px solid #333;
+			padding: 15px;
+			margin-bottom: 10px;
+			border-radius: 8px;
+		}
+
+		.peptide-card h3,
+		.source-card h3 {
+			margin: 0 0 5px 0;
+		}
+
+		.peptide-card a,
+		.source-card a,
+		.vendor-entry a {
+			color: #4facfe;
+			text-decoration: none;
+			font-size: 0.9em;
+		}
+
+		.syringe-bar {
+			background: #333;
+			height: 40px;
+			width: 100%;
+			border-radius: 6px;
+			position: relative;
+			box-shadow: inset 0 0 5px #000;
+			margin-top: 20px;
+		}
+
+		.syringe-fill {
+			background: #4facfe;
+			height: 100%;
+			border-radius: 6px 0 0 6px;
+		}
+
+		.syringe-label {
+			position: absolute;
+			top: 100%;
+			color: #4facfe;
+			font-size: 14px;
+			margin-top: 5px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<h1>🧬 NSO Peptide App</h1>
+			<p>Search peptides • Calculate doses • Find trusted sources</p>
+		</header>
+		<nav>
+			<button onclick="showSection('db'); document.getElementById('search').value = ''; filterPeptides();">📚 Peptides</button>
+			<button onclick="showSection('calc')">🧪 Calculator</button>
+			<button onclick="showSection('sources')">🔗 Trusted Sources</button>
+		</nav>
+		<section id="db" class="active">
+			<input type="text" id="search" placeholder="Search peptides..." oninput="filterPeptides()">
+			<div id="peptide-list"></div>
+		</section>
+		<section id="calc">
+			<h2>Injection Calculator</h2>
+			<div class="form-group"><label>Total Peptide Amount (mg):</label><input type="number" id="amountMg"></div>
+			<div class="form-group"><label>Total Reconstitution Volume (mL):</label><input type="number" id="volumeMl"></div>
+			<div class="form-group"><label>Desired Dose (mcg):</label><input type="number" id="doseMcg"></div>
+			<button onclick="calculate()">Calculate</button>
+			<div id="calc-result"></div>
+			<div id="syringe-container"></div>
+		</section>
+		<section id="sources">
+			<h2>🔗 Trusted Peptide Sources</h2>
+			<div id="source-list"></div>
+		</section>
+	</div>
+
+	<script>
+		const sources = [{
+				name: "Peptide Sciences",
+				url: "https://www.peptidesciences.com",
+				logo: "https://tse4.mm.bing.net/th?id=OIP.BkZe1iQWv3ecEeh8XrrM-QHaHJ&pid=Api",
+				note: "US-based, publishes COAs, GMP facility"
+			},
+			{
+				name: "Planet Peptide",
+				url: "https://planetpeptide.com",
+				logo: "https://tse2.mm.bing.net/th?id=OIP.7jc_Y0UFi0YEFOj0pIOpXQHaDt&pid=Api",
+				note: "Competitive pricing, fast US shipping"
+			},
+			{
+				name: "Modern Peptides",
+				url: "https://modernpeptides.com",
+				logo: "https://tse4.mm.bing.net/th?id=OIP.K3IypvA1ERxfDAzTOX2ItwHaHa&pid=Api",
+				note: "Third-party tested, user-verified"
+			},
+			{
+				name: "Science.bio",
+				url: "https://www.science.bio",
+				logo: "https://tse4.mm.bing.net/th?id=OIP.gERtaAqREzCchLrcB8DbTwHaHa&pid=Api",
+				note: "Well-known for COAs and research purity"
+			},
+			{
+				name: "Swiss Chems",
+				url: "https://www.swisschems.is",
+				logo: "https://tse2.mm.bing.net/th?id=OIP.rkDdFQmVDhClK6F1y0SctwHaHa&pid=Api",
+				note: "International shipping, bulk options"
+			},
+			{
+				name: "Limitless Life Nootropics",
+				url: "https://www.limitlesslifenootropics.com",
+				logo: "https://tse4.mm.bing.net/th?id=OIP.eAn-4y6c8uUTyFv5jErUjQHaHa&pid=Api",
+				note: "Test results available, wide product line"
+			},
+			{
+				name: "Core Peptides",
+				url: "https://www.corepeptides.com",
+				logo: "https://tse1.mm.bing.net/th?id=OIP.TFszsbQKvV9VpO_2WJS94AHaHa&pid=Api",
+				note: "3rd party tested with COAs, US-sourced"
+			}
+		];
+
+		function showSection(id) {
+			document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+			document.getElementById(id).classList.add('active');
+		}
+
+		function loadSources() {
+			const list = document.getElementById("source-list");
+			list.innerHTML = "";
+			sources.forEach(src => {
+				const c = document.createElement("div");
+				c.className = "source-card";
+				c.innerHTML = `
+          <a href="${src.url}" target="_blank" style="text-decoration:none;color:inherit;">
+            <img src="${src.logo}" alt="${src.name} Logo" style="max-height:40px; vertical-align:middle; margin-right:10px;">
+            <strong>${src.name}</strong><br>
+            <p style="margin-top:5px;">${src.note}</p>
+          </a>
+        `;
+				list.appendChild(c);
+			});
+		}
+		const peptides = [{
+				name: "BPC-157",
+				description: "Regenerative peptide shown to support healing, joint recovery, and gut health.",
+				use: "Injection (subcutaneous or intramuscular)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/8757778/", "https://pubmed.ncbi.nlm.nih.gov/24642943/"],
+				vendors: [
+					{ vendor: "Peptide Sciences", price: 100, amount_mg: 10, url: "https://www.peptidesciences.com/bpc-157-10mg" }
+				]
+			},
+			{
+				name: "GHK-Cu",
+				description: "Copper peptide with wound healing and cosmetic benefits. Promotes skin, hair, and tissue regeneration.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/30739465/"],
+				vendors: [
+					{ vendor: "Modern Aminos", price: 44, amount_mg: 50, url: "https://modernaminos.com/product/ghk-cu/" }
+				]
+			},
+			{
+				name: "Retatrutide",
+				description: "Triple agonist targeting GLP-1, GIP, and glucagon receptors. Investigated for obesity and metabolic support.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://www.nejm.org/doi/full/10.1056/NEJMoa2301972"],
+				vendors: [
+					{ vendor: "Planet Peptide", price: 85, amount_mg: 20, url: "https://planetpeptide.com/product/retatrutide-20mg/" }
+				]
+			},
+			{
+				name: "CJC-1295 + Ipamorelin",
+				description: "GHRH + GHRP combo. Boosts natural growth hormone and IGF-1 levels.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/15268871/"],
+				vendors: []
+			},
+			{
+				name: "PT-141",
+				description: "Libido-enhancing melanocortin agonist. FDA-approved for sexual dysfunction.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/19013216/"],
+				vendors: []
+			},
+			{
+				name: "DSIP",
+				description: "Delta sleep-inducing peptide. May help improve deep sleep and reduce cortisol.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/6344245/"],
+				vendors: []
+			},
+			{
+				name: "Semax",
+				description: "Nootropic peptide studied for neuroprotection, memory, mood, and recovery after brain injury.",
+				use: "Injection or nasal spray",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/12937682/"],
+				vendors: []
+			},
+			{
+				name: "Selank",
+				description: "Anxiolytic peptide that modulates GABA. Used for stress, anxiety, and cognitive function.",
+				use: "Injection or nasal spray",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/19004399/"],
+				vendors: []
+			},
+			{
+				name: "Thymosin Alpha-1",
+				description: "Immune-support peptide used in chronic infections and cancer research.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/20370618/"],
+				vendors: []
+			},
+			{
+				name: "AOD-9604",
+				description: "Modified fragment of HGH, studied for fat burning and metabolic support.",
+				use: "Injection (subcutaneous)",
+				studies: ["https://pubmed.ncbi.nlm.nih.gov/16476383/"],
+				vendors: []
+			}
+		];
+
+		function filterPeptides() {
+			const q = document.getElementById("search").value.toLowerCase();
+			const list = document.getElementById("peptide-list");
+			list.innerHTML = "";
+
+			peptides
+				.filter(p => !q || p.name.toLowerCase().includes(q))
+				.forEach(peptide => {
+					const c = document.createElement("div");
+					c.className = "peptide-card";
+					let html = `<h3>${peptide.name}</h3><p>${peptide.description}</p><p><strong>Use:</strong> ${peptide.use}</p>`;
+					if (peptide.studies.length) {
+						html += `<p><strong>Studies:</strong><br>`;
+						peptide.studies.forEach(url => html += `<a href="${url}" target="_blank">${url}</a><br>`);
+						html += "</p>";
+					}
+					if (peptide.vendors?.length) {
+						const sorted = peptide.vendors.slice().sort((a, b) => (a.price / a.amount_mg) - (b.price / b.amount_mg));
+						html += `<p><strong>Vendors:</strong></p>`;
+						sorted.forEach(v => {
+							const perMg = (v.price / v.amount_mg).toFixed(2);
+							html += `<div class="vendor-entry"><a href="${v.url}" target="_blank">${v.vendor}</a> — $${v.price} for ${v.amount_mg}mg ($${perMg}/mg)</div>`;
+						});
+						const best = sorted[0];
+						html += `<p><strong>🏷️ Best Deal:</strong> ${best.vendor} at $${(best.price / best.amount_mg).toFixed(2)}/mg</p>`;
+					}
+					c.innerHTML = html;
+					list.appendChild(c);
+				});
+		}
+
+		function calculate() {
+			const mg = parseFloat(document.getElementById("amountMg").value);
+			const ml = parseFloat(document.getElementById("volumeMl").value);
+			const dose = parseFloat(document.getElementById("doseMcg").value);
+			if (isNaN(mg) || isNaN(ml) || isNaN(dose)) return;
+
+			const totalMcg = mg * 1000;
+			const mcgPerMl = totalMcg / ml;
+			const unitsPerDose = (dose / mcgPerMl) * 100;
+
+			document.getElementById("calc-result").innerHTML = `
+        <p><strong>Result:</strong> Inject <strong>${unitsPerDose.toFixed(1)}</strong> units (${dose} mcg)</p>
+      `;
+
+			const fillUnits = Math.min(unitsPerDose, 100);
+			const percentFill = (fillUnits / 100) * 100;
+
+			document.getElementById("syringe-container").innerHTML = `
+        <div class="syringe-bar" style="position: relative;">
+          <div class="syringe-fill" style="width: ${percentFill}%;"></div>
+          <div class="syringe-label">${fillUnits.toFixed(1)} units</div>
+          <div style="position:absolute; top: -18px; width: 100%; display: flex; justify-content: space-between; font-size: 10px; color: #888;">
+            ${[...Array(11)].map((_, i) => `<span>${i * 10}</span>`).join('')}
+          </div>
+        </div>
+      `;
+		}
+
+		loadSources();
+		filterPeptides();
+	</script>
+</body>
+
+</html>
