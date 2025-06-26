@@ -4,94 +4,106 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NSO Research — Peptide Encyclopedia</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSO Research — Peptide App</title>
+
+  <!-- 👇 ADD THIS -->
   <style>
-    :root {
-      --bg-color: #f7f9fc;
-      --primary: #0066cc;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --border-radius: 18px;
-      --text-color: #1a1a1a;
-      --font: 'Inter', 'Segoe UI', Tahoma, sans-serif;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
     body {
       margin: 0;
-      font-family: var(--font);
-      background: var(--bg-color);
-      color: var(--text-color);
-    }
-
-    header {
-      padding: 30px 20px;
-      text-align: center;
-      background: white;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-      color: var(--primary);
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f4f9fb;
+      color: #1a1a1a;
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 40px 20px;
     }
 
+    h1, h2 {
+      text-align: center;
+      color: #0077b6;
+      margin-bottom: 20px;
+    }
+
     .search {
       width: 100%;
-      padding: 14px 20px;
+      padding: 15px;
       font-size: 16px;
+      border-radius: 12px;
       border: 1px solid #ccc;
-      border-radius: var(--border-radius);
       margin-bottom: 30px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      background: #ffffff;
+      color: #1a1a1a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
     }
 
     .peptide-card {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      cursor: pointer;
+      border: 1px solid #e1eaf1;
     }
 
     .peptide-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
     }
 
     .peptide-card h2 {
+      color: #0077b6;
+      margin-bottom: 12px;
       font-size: 20px;
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-
-    .peptide-card p {
-      font-size: 14px;
-      line-height: 1.5;
     }
 
     .details {
-      margin-top: 15px;
-      display: none;
-      font-size: 13px;
-      color: #444;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #c9d6e3;
+      font-size: 14px;
+      color: #555;
     }
 
     .peptide-card.open .details {
       display: block;
     }
+
+    .section {
+      margin-top: 60px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: 5px;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 13px;
+      color: #888;
+    }
   </style>
+  <!-- 👆 END OF STYLING -->
+</head>
 </head>
 <body>
   <header>
