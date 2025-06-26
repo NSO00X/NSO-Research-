@@ -435,7 +435,7 @@ function calculateDose() {
   const mlPerDose = dose / mcgPerMl;
   const units = mlPerDose * 100;
 
-  result.textContent = `Inject ${units.toFixed(1)} IU (insulin units) for ${dose} mcg.`;
+  result.textContent = `Inject ${units.toFixed(1)} units for ${dose} mcg.`;
 }
 
 displayPeptides(peptides);
