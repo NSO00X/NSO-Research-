@@ -5,141 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NSO Research — Peptide App</title>
   <style id="theme-style">
-    :root {
-      --bg: #12121c;
-      --text: #f0f0f0;
-      --card-bg: #1e1e2f;
-      --highlight: #61dafb;
-      --input-bg: #1f1f2e;
+    <div class="section" id="vendor-list">
+      <h2>Trusted Vendors</h2>
+      <div class="vendor">Modern Amino — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Amino Asylum — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Peptide Sciences — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Pure Rawz — <a href="#" target="_blank">Visit Site</a></div>
+    </div>
+  </div>
+
+  <footer>
+    Made by NSO Research · For Research Use Only
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Load stored theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      themeToggle.checked = true;
     }
 
-    body.light {
-      --bg: #ffffff;
-      --text: #000000;
-      --card-bg: #f5f5f5;
-      --highlight: #007aff;
-      --input-bg: #e0e0e0;
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+
+    const peptides = [
+      {
+        name: "BPC-157",
+        description: "Promotes healing of muscles, nerves, and ligaments.",
+        dosage: "250–500mcg/day",
+        details: "Great for soft tissue repair, gut healing, and systemic recovery."
+      },
+      {
+        name: "Semax",
+        description: "Cognitive enhancer and neuroprotective agent.",
+        dosage: "300–600mcg/day",
+        details: "Useful for focus, memory, and recovery from brain fatigue."
+      },
+      {
+        name: "TB-500",
+        description: "Tissue and muscle repair peptide often used for injury recovery.",
+        dosage: "2.0–2.5mg twice weekly (loading phase)",
+        details: "Promotes healing of ligaments and tendons. Often stacked with BPC-157."
+      },
+      {
+        name: "GHK-Cu",
+        description: "Copper peptide for anti-aging and skin regeneration.",
+        dosage: "1–2mg/day",
+        details: "Improves skin elasticity, wound healing, and hair regrowth."
+      },
+      {
+        name: "DSIP",
+        description: "Sleep-promoting peptide for stress recovery.",
+        dosage: "100–500mcg before bed",
+        details: "May help regulate sleep cycles and reduce cortisol."
+      }
+      // Add more peptides as needed
+    ];
+
+    function displayPeptides(list) {
+      const container = document.getElementById("peptide-list");
+      container.innerHTML = "";
+      list.forEach(peptide => {
+        const card = document.createElement("div");
+        card.className = "peptide-card";
+        card.innerHTML = `
+          <h2>${peptide.name}</h2>
+          <p>${peptide.description}</p>
+          <p><strong>Dosing:</strong> ${peptide.dosage}</p>
+          <div class="details">${peptide.details}</div>
+        `;
+        card.addEventListener("click", () => {
+          card.classList.toggle("open");
+        });
+        container.appendChild(card);
+      });
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      transition: background 0.3s, color 0.3s;
+    function filterPeptides(query) {
+      const filtered = peptides.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase())
+      );
+      displayPeptides(filtered);
     }
 
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    h1, h2 {
-      text-align: center;
-      color: var(--highlight);
-      margin-bottom: 20px;
-    }
-
-    .search {
-      width: 100%;
-      padding: 15px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 30px;
-      background: var(--input-bg);
-      color: var(--text);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .peptide-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .peptide-card:hover {
-      transform: scale(1.02);
-    }
-
-    .peptide-card h2 {
-      color: var(--highlight);
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-
-    .vendor {
-      margin-top: 10px;
-      background: var(--input-bg);
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 13px;
-    }
-
-    .summary {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #00ff88;
-    }
-
-    .details {
-      display: none;
-      margin-top: 15px;
-      background: #2a2a3d;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 13px;
-    }
-
-    .peptide-card.open .details {
-      display: block;
-    }
-
-    .section {
-      margin-top: 60px;
-    }
-
-    input, button {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      margin: 5px;
-      font-size: 14px;
-    }
-
-    #vendor-list .vendor {
-      background: var(--input-bg);
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 10px;
-    }
-
-    .top-buttons {
-      text-align: right;
-      padding: 10px;
-    }
-
-    .top-buttons label {
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 50px;
-      color: #777;
-      font-size: 13px;
-    }
+    displayPeptides(peptides);
+  </script>
+</body>
+</html>
   </style>
 </head>
 <body>
