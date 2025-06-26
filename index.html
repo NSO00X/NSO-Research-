@@ -153,6 +153,7 @@
       transition: right 0.3s ease;
       padding: 20px;
       z-index: 999;
+      overflow-y: auto;
     }
 
     .cart-overlay.open {
@@ -163,6 +164,17 @@
       margin-bottom: 10px;
       border-bottom: 1px solid #ccc;
       padding-bottom: 8px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-item button {
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
       font-size: 14px;
     }
 
@@ -224,6 +236,13 @@
 
     function toggleCart() {
       document.getElementById('cartDrawer').classList.toggle('open');
+    }
+
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartDisplay();
     }
 
     const peptides = Array.from({length: 60}).map((_, i) => {
@@ -300,13 +319,12 @@
       const cartItems = document.getElementById("cartItems");
       cartItems.innerHTML = "";
       let total = 0;
-      cart.forEach(item => {
+      cart.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "cart-item";
-        div.innerHTML = `
-  <strong>${item.name}</strong> — $${item.price}
-  <button style="float:right; background:#ff4d4d; color:white; border:none; padding:2px 6px; border-radius:6px; cursor:pointer;" onclick="removeFromCart(${index})">Remove</button>
-`;
+        div.innerHTML = `<span><strong>${item.name}</strong> — $${item.price}</span>
+                         <button onclick="removeFromCart(${index})">✕</button>`;
+        total += parseFloat(item.price);
         cartItems.appendChild(div);
       });
       document.getElementById("cartTotal").textContent = total.toFixed(2);
