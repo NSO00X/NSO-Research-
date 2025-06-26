@@ -35,19 +35,21 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 20px;
     }
 
     h1 {
       text-align: center;
       color: var(--accent-blue);
       margin-bottom: 20px;
+      font-size: 28px;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .toggle {
@@ -57,6 +59,7 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .search {
@@ -71,7 +74,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
 
@@ -98,11 +101,13 @@
     .peptide-card h2 {
       margin: 10px 0 5px;
       color: var(--accent-blue);
+      font-size: 16px;
     }
 
     .price-line {
       text-decoration: line-through;
       color: #999;
+      font-size: 14px;
     }
 
     .deal {
@@ -119,6 +124,7 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
+      width: 100%;
     }
 
     .cart-icon {
@@ -132,6 +138,7 @@
       font-weight: bold;
       z-index: 999;
       cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
     .cart-overlay {
@@ -156,6 +163,7 @@
       margin-bottom: 10px;
       border-bottom: 1px solid #ccc;
       padding-bottom: 8px;
+      font-size: 14px;
     }
 
     .pagination {
@@ -171,6 +179,17 @@
       border-radius: 6px;
       margin: 0 3px;
       cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .toggle {
+        width: 100%;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -224,7 +243,7 @@
     const itemsPerPage = 10;
     let currentPage = 1;
 
-    function displayPeptides(list, page=1) {
+    function displayPeptides(list, page = 1) {
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const shown = list.slice(start, end);
