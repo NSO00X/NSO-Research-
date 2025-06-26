@@ -3,255 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSO Research — Peptide App</title>
-  <style id="theme-style">
+  <title>NSO Research — Peptide Encyclopedia</title>
+  <style>
     body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: #f9f9f9;
-  color: #111;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #111;
+      transition: background 0.3s, color 0.3s;
+    }
 
-body.dark {
-  background: #121212;
-  color: #f0f0f0;
-}
+    .dark-mode {
+      background-color: #121212;
+      color: #f8f8f8;
+    }
 
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
 
-h1, h2 {
-  text-align: center;
-  color: #007AFF;
-  margin-bottom: 20px;
-}
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #007aff;
+      margin-bottom: 40px;
+    }
 
-.search {
-  width: 100%;
-  padding: 15px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  margin-bottom: 30px;
-  background: #fff;
-  color: #111;
-}
+    .search {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-bottom: 30px;
+    }
 
-body.dark .search {
-  background: #1f1f1f;
-  color: #fff;
-  border: 1px solid #333;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
+    .peptide-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
 
-.peptide-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
+    .dark-mode .peptide-card {
+      background: #1f1f1f;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 
-body.dark .peptide-card {
-  background: #1e1e1e;
-}
+    .peptide-card:hover {
+      transform: scale(1.02);
+    }
 
-.peptide-card:hover {
-  transform: scale(1.01);
-}
+    .peptide-card h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #007aff;
+      display: flex;
+      align-items: center;
+    }
 
-.peptide-card h2 {
-  color: #007AFF;
-  margin-bottom: 10px;
-  font-size: 20px;
-}
+    .peptide-card h2 img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
 
-.vendor {
-  margin-top: 10px;
-  background: #f0f0f0;
-  border-radius: 10px;
-  padding: 10px;
-  font-size: 13px;
-}
+    .peptide-card .details {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-body.dark .vendor {
-  background: #2c2c2c;
-}
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #007aff;
+      color: #fff;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-.summary {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #007AFF;
-}
-
-.details {
-  display: none;
-  margin-top: 15px;
-  background: #f5f5f5;
-  border-radius: 10px;
-  padding: 15px;
-  font-size: 13px;
-}
-
-body.dark .details {
-  background: #2a2a2a;
-}
-
-.peptide-card.open .details {
-  display: block;
-}
-
-.section {
-  margin-top: 60px;
-}
-
-input, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin: 5px;
-  font-size: 14px;
-}
-
-button {
-  background: #007AFF;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background: #005FCC;
-}
-
-.top-buttons {
-  padding: 20px;
-  text-align: center;
-}
-
-.top-buttons label {
-  font-size: 14px;
-  color: #007AFF;
-  cursor: pointer;
-}
-
-footer {
-  text-align: center;
-  margin-top: 50px;
-  color: #aaa;
-  font-size: 13px;
-}
+    footer {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 60px;
+      color: #888;
+    }
   </style>
 </head>
 <body>
-  <div class="top-buttons">
-    <label>
-      <input type="checkbox" id="themeToggle" />
-      Toggle Dark Mode
-    </label>
-  </div>
+  <button class="toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
   <div class="container">
     <h1>NSO Research — Peptide Encyclopedia</h1>
     <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)" />
     <div class="grid" id="peptide-list"></div>
-        <div class="section" id="vendor-list">
-      <h2>Trusted Vendors</h2>
-      <div class="vendor">Modern Amino — <a href="#" target="_blank">Visit Site</a></div>
-      <div class="vendor">Amino Asylum — <a href="#" target="_blank">Visit Site</a></div>
-      <div class="vendor">Peptide Sciences — <a href="#" target="_blank">Visit Site</a></div>
-      <div class="vendor">Pure Rawz — <a href="#" target="_blank">Visit Site</a></div>
-    </div>
   </div>
 
-  <footer>
-    Made by NSO Research · For Research Use Only
-  </footer>
+  <footer>Made by NSO Research · For Research Use Only</footer>
 
   <script>
-    const themeToggle = document.getElementById('themeToggle');
-
-    // Load stored theme
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light');
-      themeToggle.checked = true;
-    }
-
-    themeToggle.addEventListener('change', () => {
-      document.body.classList.toggle('light');
-      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
-    });
-
     const peptides = [
-      {
-        name: "BPC-157",
-        description: "Promotes healing of muscles, nerves, and ligaments.",
-        dosage: "250–500mcg/day",
-        details: "Great for soft tissue repair, gut healing, and systemic recovery."
-      },
-      {
-        name: "Semax",
-        description: "Cognitive enhancer and neuroprotective agent.",
-        dosage: "300–600mcg/day",
-        details: "Useful for focus, memory, and recovery from brain fatigue."
-      },
-      {
-        name: "TB-500",
-        description: "Tissue and muscle repair peptide often used for injury recovery.",
-        dosage: "2.0–2.5mg twice weekly (loading phase)",
-        details: "Promotes healing of ligaments and tendons. Often stacked with BPC-157."
-      },
-      {
-        name: "GHK-Cu",
-        description: "Copper peptide for anti-aging and skin regeneration.",
-        dosage: "1–2mg/day",
-        details: "Improves skin elasticity, wound healing, and hair regrowth."
-      },
-      {
-        name: "DSIP",
-        description: "Sleep-promoting peptide for stress recovery.",
-        dosage: "100–500mcg before bed",
-        details: "May help regulate sleep cycles and reduce cortisol."
-      }
-      // Add more peptides as needed
+      { name: "BPC-157", icon: "🧬", description: "Promotes healing of muscles, nerves, and ligaments.", dosage: "250–500mcg/day", details: "Systemic recovery, gut and tissue repair." },
+      { name: "TB-500", icon: "💉", description: "Powerful tissue and tendon repair peptide.", dosage: "2–2.5mg weekly", details: "Often stacked with BPC-157 for injury healing." },
+      { name: "GHK-Cu", icon: "🔵", description: "Copper peptide for anti-aging and regeneration.", dosage: "1–2mg/day", details: "Improves skin, hair, and tissue health." },
+      { name: "DSIP", icon: "🌙", description: "Promotes restful sleep and reduces cortisol.", dosage: "100–500mcg before bed", details: "May regulate circadian rhythm." },
+      { name: "Semax", icon: "🧠", description: "Nootropic peptide for focus and memory.", dosage: "300–600mcg/day", details: "Neuroprotective; enhances cognitive function." },
+      { name: "Selank", icon: "🧘‍♂️", description: "Anxiolytic peptide with mood-stabilizing effects.", dosage: "250–500mcg/day", details: "Used for anxiety, social comfort, and clarity." },
+      { name: "PT-141", icon: "🔥", description: "Libido enhancer for men and women.", dosage: "1–2mg before activity", details: "FDA-approved for female sexual dysfunction." },
+      { name: "CJC-1295", icon: "⏳", description: "Boosts natural growth hormone levels.", dosage: "250–500mcg/day", details: "Often paired with Ipamorelin." },
+      { name: "Ipamorelin", icon: "📈", description: "Growth hormone secretagogue.", dosage: "200–300mcg/day", details: "Low side effect profile, popular stack item." },
+      { name: "Tesamorelin", icon: "🏋️", description: "Reduces visceral fat and improves GH release.", dosage: "1–2mg/day", details: "Clinically used in HIV-related lipodystrophy." },
+      { name: "AOD-9604", icon: "⚡", description: "Fat-burning peptide from HGH fragment.", dosage: "250–500mcg/day", details: "Helps reduce body fat without muscle loss." },
+      { name: "Thymosin Alpha-1", icon: "🛡️", description: "Immune-enhancing peptide.", dosage: "1.6mg/week", details: "May improve resilience to infection." },
+      { name: "Follistatin 344", icon: "💪", description: "Inhibits myostatin for muscle growth.", dosage: "100–300mcg/week", details: "Extreme anabolic potential." },
+      { name: "IGF-1 LR3", icon: "📊", description: "Growth factor for repair and hypertrophy.", dosage: "20–50mcg/day", details: "Synergistic with GH-related peptides." },
+      { name: "Hexarelin", icon: "⚙️", description: "Potent GH stimulator.", dosage: "100–200mcg/day", details: "Stronger than Ipamorelin, can desensitize." },
+      { name: "Fragment 176-191", icon: "🧯", description: "Fat loss fragment of HGH.", dosage: "250–500mcg/day", details: "Targets adipose tissue without blood sugar effects." },
+      { name: "Epitalon", icon: "⏱️", description: "Longevity peptide activating telomerase.", dosage: "5–10mg per cycle", details: "May increase lifespan and sleep quality." },
+      { name: "MOTS-c", icon: "🔋", description: "Mitochondrial peptide for metabolism.", dosage: "5–15mg/week", details: "Supports fat loss and insulin sensitivity." },
+      { name: "N-Acetyl Semax", icon: "⚗️", description: "Stable, potent version of Semax.", dosage: "300–600mcg/day", details: "Improved stability and nootropic benefit." },
+      { name: "N-Acetyl Selank", icon: "💨", description: "Stable version of Selank.", dosage: "250–500mcg/day", details: "Longer duration of effect on mood and anxiety." },
+      { name: "Oxytocin", icon: "❤️", description: "Bonding and social comfort peptide.", dosage: "10–20 IU as needed", details: "Enhances empathy and trust in social settings." },
+      { name: "Gonadorelin", icon: "🎯", description: "Stimulates LH/FSH release.", dosage: "100–150mcg 3x/week", details: "Used post-cycle for testosterone recovery." },
+      { name: "Buserelin", icon: "🔁", description: "GnRH agonist for hormonal stimulation.", dosage: "100mcg/day", details: "Temporarily boosts LH/FSH before suppression." },
+      { name: "PEG-MGF", icon: "🧱", description: "Muscle growth peptide.", dosage: "200–400mcg post-workout", details: "Targets muscle recovery." },
+      { name: "HGH", icon: "📦", description: "Human growth hormone.", dosage: "1–4 IU/day", details: "Improves recovery, fat loss, and sleep." },
+      { name: "LR3 IGF-1 DES", icon: "📍", description: "Localized muscle growth IGF variant.", dosage: "20–40mcg near muscle", details: "Inject around muscle post-workout." },
+      { name: "Kisspeptin-10", icon: "🧪", description: "Stimulates natural testosterone release.", dosage: "100–200mcg/day", details: "Mimics LH/FSH secretion." },
+      { name: "MOD-GRF (1-29)", icon: "🔄", description: "Short-acting GHRH analog.", dosage: "100–200mcg/day", details: "Pairs with GHRPs like Ipamorelin." },
+      { name: "Melanotan II", icon: "🌞", description: "Tanning + libido peptide.", dosage: "250–500mcg/day", details: "Gradually darkens skin and boosts libido." },
+      { name: "Zinc Thymulin", icon: "🦠", description: "Hair growth and immune support peptide.", dosage: "1–2mg/day", details: "Experimental peptide for scalp health." }
     ];
 
     function displayPeptides(list) {
       const container = document.getElementById("peptide-list");
       container.innerHTML = "";
-      list.forEach(peptide => {
+      list.forEach(p => {
         const card = document.createElement("div");
         card.className = "peptide-card";
         card.innerHTML = `
-          <h2>${peptide.name}</h2>
-          <p>${peptide.description}</p>
-          <p><strong>Dosing:</strong> ${peptide.dosage}</p>
-          <div class="details">${peptide.details}</div>
+          <h2><span>${p.icon}</span> ${p.name}</h2>
+          <p>${p.description}</p>
+          <div class="details"><strong>Dosing:</strong> ${p.dosage}<br>${p.details}</div>
         `;
-        card.addEventListener("click", () => {
-          card.classList.toggle("open");
-        });
         container.appendChild(card);
       });
     }
 
     function filterPeptides(query) {
-      const filtered = peptides.filter(p =>
+      const results = peptides.filter(p =>
         p.name.toLowerCase().includes(query.toLowerCase())
       );
-      displayPeptides(filtered);
+      displayPeptides(results);
     }
 
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    // Initial render
     displayPeptides(peptides);
   </script>
 </body>
