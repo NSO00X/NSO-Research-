@@ -3,22 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSO Research — Peptide Encyclopedia</title>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NSO Research — Peptide App</title>
+  <style id="theme-style">
+    :root {
+      --bg: #12121c;
+      --text: #f0f0f0;
+      --card-bg: #1e1e2f;
+      --highlight: #61dafb;
+      --input-bg: #1f1f2e;
+    }
 
-  <!-- 👇 ADD THIS -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    body.light {
+      --bg: #ffffff;
+      --text: #000000;
+      --card-bg: #f5f5f5;
+      --highlight: #007aff;
+      --input-bg: #e0e0e0;
+    }
 
     body {
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f4f9fb;
-      color: #1a1a1a;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
@@ -29,7 +38,7 @@
 
     h1, h2 {
       text-align: center;
-      color: #0077b6;
+      color: var(--highlight);
       margin-bottom: 20px;
     }
 
@@ -38,45 +47,58 @@
       padding: 15px;
       font-size: 16px;
       border-radius: 12px;
-      border: 1px solid #ccc;
+      border: none;
       margin-bottom: 30px;
-      background: #ffffff;
-      color: #1a1a1a;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: var(--input-bg);
+      color: var(--text);
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
+      gap: 20px;
     }
 
     .peptide-card {
-      background: rgba(255, 255, 255, 0.9);
+      background: var(--card-bg);
       border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 1px solid #e1eaf1;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
 
     .peptide-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      transform: scale(1.02);
     }
 
     .peptide-card h2 {
-      color: #0077b6;
-      margin-bottom: 12px;
+      color: var(--highlight);
+      margin-bottom: 10px;
       font-size: 20px;
     }
 
+    .vendor {
+      margin-top: 10px;
+      background: var(--input-bg);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .summary {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #00ff88;
+    }
+
     .details {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed #c9d6e3;
-      font-size: 14px;
-      color: #555;
+      display: none;
+      margin-top: 15px;
+      background: #2a2a3d;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 13px;
     }
 
     .peptide-card.open .details {
@@ -90,92 +112,135 @@
     input, button {
       padding: 10px;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: none;
       margin: 5px;
+      font-size: 14px;
+    }
+
+    #vendor-list .vendor {
+      background: var(--input-bg);
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .top-buttons {
+      text-align: right;
+      padding: 10px;
+    }
+
+    .top-buttons label {
+      cursor: pointer;
       font-size: 14px;
     }
 
     footer {
       text-align: center;
-      margin-top: 60px;
+      margin-top: 50px;
+      color: #777;
       font-size: 13px;
-      color: #888;
     }
   </style>
-  <!-- 👆 END OF STYLING -->
-</head>
 </head>
 <body>
-  <header>
-    <h1>NSO Research — Peptide Encyclopedia</h1>
-  </header>
-
+  <div class="top-buttons">
+    <label>
+      <input type="checkbox" id="themeToggle" />
+      Toggle Dark Mode
+    </label>
+  </div>
   <div class="container">
+    <h1>NSO Research — Peptide Encyclopedia</h1>
     <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)" />
     <div class="grid" id="peptide-list"></div>
+        <div class="section" id="vendor-list">
+      <h2>Trusted Vendors</h2>
+      <div class="vendor">Modern Amino — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Amino Asylum — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Peptide Sciences — <a href="#" target="_blank">Visit Site</a></div>
+      <div class="vendor">Pure Rawz — <a href="#" target="_blank">Visit Site</a></div>
+    </div>
   </div>
+
+  <footer>
+    Made by NSO Research · For Research Use Only
+  </footer>
+
   <script>
-  const peptides = [
-    {
-      name: "BPC-157",
-      description: "Promotes healing of muscles, nerves, and ligaments.",
-      dosage: "250–500mcg/day",
-      details: "Great for soft tissue repair, gut healing, and systemic recovery."
-    },
-    {
-      name: "Semax",
-      description: "Cognitive enhancer and neuroprotective agent.",
-      dosage: "300–600mcg/day",
-      details: "Useful for focus, memory, and recovery from brain fatigue."
-    },
-    {
-      name: "GHK-Cu",
-      description: "Copper peptide for anti-aging and skin regeneration.",
-      dosage: "1–2mg/day",
-      details: "Improves skin elasticity, wound healing, and hair regrowth."
-    },
-    {
-      name: "DSIP",
-      description: "Sleep-promoting peptide for stress recovery.",
-      dosage: "100–500mcg before bed",
-      details: "May help regulate sleep cycles and reduce cortisol."
-    },
-    {
-      name: "PT-141",
-      description: "Used for libido enhancement in men and women.",
-      dosage: "1–2mg 30–60 mins before activity",
-      details: "FDA-approved for female sexual dysfunction."
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Load stored theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      themeToggle.checked = true;
     }
-    // Add more peptides here if you'd like
-  ];
 
-  function displayPeptides(list) {
-    const container = document.getElementById("peptide-list");
-    container.innerHTML = "";
-    list.forEach(peptide => {
-      const card = document.createElement("div");
-      card.className = "peptide-card";
-      card.innerHTML = `
-        <h2>${peptide.name}</h2>
-        <p>${peptide.description}</p>
-        <p><strong>Dosing:</strong> ${peptide.dosage}</p>
-        <div class="details">${peptide.details}</div>
-      `;
-      card.addEventListener("click", () => {
-        card.classList.toggle("open");
-      });
-      container.appendChild(card);
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('light');
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
     });
-  }
 
-  function filterPeptides(query) {
-    const filtered = peptides.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase())
-    );
-    displayPeptides(filtered);
-  }
+    const peptides = [
+      {
+        name: "BPC-157",
+        description: "Promotes healing of muscles, nerves, and ligaments.",
+        dosage: "250–500mcg/day",
+        details: "Great for soft tissue repair, gut healing, and systemic recovery."
+      },
+      {
+        name: "Semax",
+        description: "Cognitive enhancer and neuroprotective agent.",
+        dosage: "300–600mcg/day",
+        details: "Useful for focus, memory, and recovery from brain fatigue."
+      },
+      {
+        name: "TB-500",
+        description: "Tissue and muscle repair peptide often used for injury recovery.",
+        dosage: "2.0–2.5mg twice weekly (loading phase)",
+        details: "Promotes healing of ligaments and tendons. Often stacked with BPC-157."
+      },
+      {
+        name: "GHK-Cu",
+        description: "Copper peptide for anti-aging and skin regeneration.",
+        dosage: "1–2mg/day",
+        details: "Improves skin elasticity, wound healing, and hair regrowth."
+      },
+      {
+        name: "DSIP",
+        description: "Sleep-promoting peptide for stress recovery.",
+        dosage: "100–500mcg before bed",
+        details: "May help regulate sleep cycles and reduce cortisol."
+      }
+      // Add more peptides as needed
+    ];
 
-  displayPeptides(peptides);
-</script>
+    function displayPeptides(list) {
+      const container = document.getElementById("peptide-list");
+      container.innerHTML = "";
+      list.forEach(peptide => {
+        const card = document.createElement("div");
+        card.className = "peptide-card";
+        card.innerHTML = `
+          <h2>${peptide.name}</h2>
+          <p>${peptide.description}</p>
+          <p><strong>Dosing:</strong> ${peptide.dosage}</p>
+          <div class="details">${peptide.details}</div>
+        `;
+        card.addEventListener("click", () => {
+          card.classList.toggle("open");
+        });
+        container.appendChild(card);
+      });
+    }
+
+    function filterPeptides(query) {
+      const filtered = peptides.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase())
+      );
+      displayPeptides(filtered);
+    }
+
+    displayPeptides(peptides);
+  </script>
 </body>
 </html>
