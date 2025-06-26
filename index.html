@@ -5,6 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NSO Research — Peptide Shop</title>
   <style>
+  .peptide-card {
+  position: relative;
+  background: #1e1e2f;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.peptide-card.open {
+  z-index: 10;
+}
+
+.details {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #2a2a3d;
+  border-radius: 0 0 20px 20px;
+  padding: 15px;
+  opacity: 0;
+  transform: translateY(0);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.peptide-card.open .details {
+  opacity: 1;
+  transform: translateY(10px);
+  pointer-events: auto;
+}
     :root {
       --accent-blue: #007aff;
       --bg-dark: #12121c;
