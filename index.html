@@ -220,9 +220,13 @@
 
   <script>
     const themeToggle = document.getElementById("themeToggle");
-    if (localStorage.getItem("theme") === "light") {
-      document.body.classList.add("light");
-    }
+    // Default to light mode unless user selected dark
+if (!localStorage.getItem("theme")) {
+  document.body.classList.add("light");
+  localStorage.setItem("theme", "light");
+} else if (localStorage.getItem("theme") === "light") {
+  document.body.classList.add("light");
+}
 
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("light");
