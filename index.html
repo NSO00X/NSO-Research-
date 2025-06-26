@@ -3,38 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSO Research — Peptide Encyclopedia</title>
+  <title>NSO Research — Peptide Store</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f8f9fa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f7f8fa;
       color: #111;
-      transition: background 0.3s, color 0.3s;
     }
 
     .dark-mode {
-      background-color: #121212;
-      color: #f8f8f8;
+      background: #12121c;
+      color: #f0f0f0;
     }
 
     .container {
-      max-width: 960px;
-      margin: 0 auto;
+      max-width: 1100px;
+      margin: auto;
       padding: 40px 20px;
     }
 
     h1 {
+      font-size: 32px;
       text-align: center;
-      font-size: 2rem;
-      color: #007aff;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     .search {
       width: 100%;
-      padding: 14px 16px;
+      padding: 15px;
       font-size: 16px;
       border-radius: 12px;
       border: 1px solid #ccc;
@@ -43,142 +40,205 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
     }
 
     .peptide-card {
-      background: #fff;
+      background: white;
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      transition: transform 0.2s ease;
-      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
       position: relative;
-    }
-
-    .dark-mode .peptide-card {
-      background: #1f1f1f;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
     }
 
     .peptide-card:hover {
-      transform: scale(1.02);
+      transform: translateY(-4px);
     }
 
     .peptide-card h2 {
-      margin: 0 0 10px;
-      font-size: 18px;
-      color: #007aff;
-      display: flex;
-      align-items: center;
+      margin: 0 0 8px;
+      font-size: 20px;
     }
 
-    .peptide-card h2 img {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-
-    .peptide-card .details {
-      margin-top: 12px;
+    .peptide-card p {
       font-size: 14px;
-      line-height: 1.5;
+      margin: 6px 0;
     }
 
-    .toggle-btn {
+    .price-box {
+      margin: 10px 0;
+    }
+
+    .price-box .retail {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .price-box .deal {
+      font-size: 16px;
+      color: #007aff;
+      font-weight: bold;
+    }
+
+    .buy-btn {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .buy-btn:hover {
+      background: #0060cc;
+    }
+
+    .pagination {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #eaeaea;
+      cursor: pointer;
+    }
+
+    .pagination button.active {
+      background: #007aff;
+      color: white;
+      font-weight: bold;
+    }
+
+    .cart-count {
       position: fixed;
       top: 20px;
       right: 20px;
       background: #007aff;
-      color: #fff;
+      color: white;
       padding: 10px 16px;
-      border: none;
-      border-radius: 12px;
+      border-radius: 20px;
       font-size: 14px;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      margin-top: 60px;
-      color: #888;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
   </style>
 </head>
 <body>
-  <button class="toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
+  <div class="cart-count" id="cartCount">Cart: 0</div>
   <div class="container">
-    <h1>NSO Research — Peptide Encyclopedia</h1>
-    <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)" />
+    <h1>NSO Research — Premium Peptides</h1>
+    <input class="search" type="text" id="searchBar" placeholder="Search peptides..." />
     <div class="grid" id="peptide-list"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
-
-  <footer>Made by NSO Research · For Research Use Only</footer>
-
   <script>
-    const peptides = [
-      { name: "BPC-157", icon: "🧬", description: "Promotes healing of muscles, nerves, and ligaments.", dosage: "250–500mcg/day", details: "Systemic recovery, gut and tissue repair." },
-      { name: "TB-500", icon: "💉", description: "Powerful tissue and tendon repair peptide.", dosage: "2–2.5mg weekly", details: "Often stacked with BPC-157 for injury healing." },
-      { name: "GHK-Cu", icon: "🔵", description: "Copper peptide for anti-aging and regeneration.", dosage: "1–2mg/day", details: "Improves skin, hair, and tissue health." },
-      { name: "DSIP", icon: "🌙", description: "Promotes restful sleep and reduces cortisol.", dosage: "100–500mcg before bed", details: "May regulate circadian rhythm." },
-      { name: "Semax", icon: "🧠", description: "Nootropic peptide for focus and memory.", dosage: "300–600mcg/day", details: "Neuroprotective; enhances cognitive function." },
-      { name: "Selank", icon: "🧘‍♂️", description: "Anxiolytic peptide with mood-stabilizing effects.", dosage: "250–500mcg/day", details: "Used for anxiety, social comfort, and clarity." },
-      { name: "PT-141", icon: "🔥", description: "Libido enhancer for men and women.", dosage: "1–2mg before activity", details: "FDA-approved for female sexual dysfunction." },
-      { name: "CJC-1295", icon: "⏳", description: "Boosts natural growth hormone levels.", dosage: "250–500mcg/day", details: "Often paired with Ipamorelin." },
-      { name: "Ipamorelin", icon: "📈", description: "Growth hormone secretagogue.", dosage: "200–300mcg/day", details: "Low side effect profile, popular stack item." },
-      { name: "Tesamorelin", icon: "🏋️", description: "Reduces visceral fat and improves GH release.", dosage: "1–2mg/day", details: "Clinically used in HIV-related lipodystrophy." },
-      { name: "AOD-9604", icon: "⚡", description: "Fat-burning peptide from HGH fragment.", dosage: "250–500mcg/day", details: "Helps reduce body fat without muscle loss." },
-      { name: "Thymosin Alpha-1", icon: "🛡️", description: "Immune-enhancing peptide.", dosage: "1.6mg/week", details: "May improve resilience to infection." },
-      { name: "Follistatin 344", icon: "💪", description: "Inhibits myostatin for muscle growth.", dosage: "100–300mcg/week", details: "Extreme anabolic potential." },
-      { name: "IGF-1 LR3", icon: "📊", description: "Growth factor for repair and hypertrophy.", dosage: "20–50mcg/day", details: "Synergistic with GH-related peptides." },
-      { name: "Hexarelin", icon: "⚙️", description: "Potent GH stimulator.", dosage: "100–200mcg/day", details: "Stronger than Ipamorelin, can desensitize." },
-      { name: "Fragment 176-191", icon: "🧯", description: "Fat loss fragment of HGH.", dosage: "250–500mcg/day", details: "Targets adipose tissue without blood sugar effects." },
-      { name: "Epitalon", icon: "⏱️", description: "Longevity peptide activating telomerase.", dosage: "5–10mg per cycle", details: "May increase lifespan and sleep quality." },
-      { name: "MOTS-c", icon: "🔋", description: "Mitochondrial peptide for metabolism.", dosage: "5–15mg/week", details: "Supports fat loss and insulin sensitivity." },
-      { name: "N-Acetyl Semax", icon: "⚗️", description: "Stable, potent version of Semax.", dosage: "300–600mcg/day", details: "Improved stability and nootropic benefit." },
-      { name: "N-Acetyl Selank", icon: "💨", description: "Stable version of Selank.", dosage: "250–500mcg/day", details: "Longer duration of effect on mood and anxiety." },
-      { name: "Oxytocin", icon: "❤️", description: "Bonding and social comfort peptide.", dosage: "10–20 IU as needed", details: "Enhances empathy and trust in social settings." },
-      { name: "Gonadorelin", icon: "🎯", description: "Stimulates LH/FSH release.", dosage: "100–150mcg 3x/week", details: "Used post-cycle for testosterone recovery." },
-      { name: "Buserelin", icon: "🔁", description: "GnRH agonist for hormonal stimulation.", dosage: "100mcg/day", details: "Temporarily boosts LH/FSH before suppression." },
-      { name: "PEG-MGF", icon: "🧱", description: "Muscle growth peptide.", dosage: "200–400mcg post-workout", details: "Targets muscle recovery." },
-      { name: "HGH", icon: "📦", description: "Human growth hormone.", dosage: "1–4 IU/day", details: "Improves recovery, fat loss, and sleep." },
-      { name: "LR3 IGF-1 DES", icon: "📍", description: "Localized muscle growth IGF variant.", dosage: "20–40mcg near muscle", details: "Inject around muscle post-workout." },
-      { name: "Kisspeptin-10", icon: "🧪", description: "Stimulates natural testosterone release.", dosage: "100–200mcg/day", details: "Mimics LH/FSH secretion." },
-      { name: "MOD-GRF (1-29)", icon: "🔄", description: "Short-acting GHRH analog.", dosage: "100–200mcg/day", details: "Pairs with GHRPs like Ipamorelin." },
-      { name: "Melanotan II", icon: "🌞", description: "Tanning + libido peptide.", dosage: "250–500mcg/day", details: "Gradually darkens skin and boosts libido." },
-      { name: "Zinc Thymulin", icon: "🦠", description: "Hair growth and immune support peptide.", dosage: "1–2mg/day", details: "Experimental peptide for scalp health." }
-    ];
+  const peptides = [
+    { name: "BPC-157", description: "Heals muscles, gut, nerves.", dosage: "250–500mcg/day", price: 39.99 },
+    { name: "TB-500", description: "Injury recovery + healing.", dosage: "2.0–2.5mg/week", price: 59.99 },
+    { name: "GHK-Cu", description: "Skin, hair, wound healing.", dosage: "1–2mg/day", price: 79.99 },
+    { name: "DSIP", description: "Sleep + cortisol regulation.", dosage: "100–500mcg/night", price: 44.99 },
+    { name: "PT-141", description: "Libido enhancer (FDA-approved)", dosage: "1–2mg/usage", price: 69.99 },
+    { name: "CJC-1295", description: "Growth hormone booster.", dosage: "250–500mcg/day", price: 64.99 },
+    { name: "Ipamorelin", description: "GH release stimulator.", dosage: "200–300mcg/day", price: 59.99 },
+    { name: "Tesamorelin", description: "Visceral fat reduction.", dosage: "1–2mg/day", price: 94.99 },
+    { name: "AOD-9604", description: "Fat loss without GH spike.", dosage: "250–500mcg/day", price: 49.99 },
+    { name: "Semax", description: "Nootropic + neuroprotective.", dosage: "300–600mcg/day", price: 39.99 },
+    { name: "Selank", description: "Anti-anxiety neuropeptide.", dosage: "250–500mcg/day", price: 34.99 },
+    { name: "Thymosin Alpha-1", description: "Immune booster.", dosage: "1.6mg/week", price: 54.99 },
+    { name: "Follistatin 344", description: "Myostatin inhibitor.", dosage: "100–300mcg/week", price: 109.99 },
+    { name: "IGF-1 LR3", description: "Muscle repair + growth.", dosage: "20–50mcg/day", price: 89.99 },
+    { name: "Hexarelin", description: "Strong GH secretagogue.", dosage: "100–200mcg/day", price: 49.99 },
+    { name: "Mod-GRF 1-29", description: "Short GH stimulator.", dosage: "100–200mcg/day", price: 34.99 },
+    { name: "Epitalon", description: "Longevity + sleep peptide.", dosage: "5–10mg/cycle", price: 64.99 },
+    { name: "MOTS-c", description: "Metabolism + endurance.", dosage: "5–15mg/week", price: 74.99 },
+    { name: "Fragment 176-191", description: "Fat loss peptide.", dosage: "250–500mcg/day", price: 49.99 },
+    { name: "N-Acetyl Semax", description: "Stable nootropic form.", dosage: "300–600mcg/day", price: 44.99 },
+    { name: "N-Acetyl Selank", description: "Stable anxiolytic peptide.", dosage: "250–500mcg/day", price: 44.99 },
+    { name: "PEG-MGF", description: "Muscle growth + repair.", dosage: "200–400mcg/workout", price: 54.99 },
+    { name: "HGH", description: "GH therapy analog.", dosage: "1–4 IU/day", price: 149.99 },
+    { name: "Oxytocin", description: "Mood + bonding hormone.", dosage: "10–20 IU", price: 29.99 },
+    { name: "Kisspeptin-10", description: "Supports testosterone.", dosage: "100–200mcg/day", price: 39.99 },
+    { name: "Gonadorelin", description: "Stimulates LH/FSH.", dosage: "100–150mcg", price: 34.99 },
+    { name: "Buserelin", description: "Testosterone restart peptide.", dosage: "100mcg/day", price: 44.99 },
+    { name: "LR3 IGF-1 DES", description: "Localized IGF analog.", dosage: "20–40mcg", price: 94.99 },
+    { name: "Zinc Thymulin", description: "Hair + immune peptide.", dosage: "1–2mg/week", price: 59.99 },
+    { name: "GHRP-6", description: "GH releaser, increases hunger.", dosage: "100–300mcg/day", price: 39.99 }
+  ];
 
-    function displayPeptides(list) {
-      const container = document.getElementById("peptide-list");
-      container.innerHTML = "";
-      list.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "peptide-card";
-        card.innerHTML = `
-          <h2><span>${p.icon}</span> ${p.name}</h2>
-          <p>${p.description}</p>
-          <div class="details"><strong>Dosing:</strong> ${p.dosage}<br>${p.details}</div>
-        `;
-        container.appendChild(card);
-      });
+  const peptidesPerPage = 10;
+  let currentPage = 1;
+  let cart = 0;
+
+  function displayPeptides(list) {
+    const start = (currentPage - 1) * peptidesPerPage;
+    const end = start + peptidesPerPage;
+    const visible = list.slice(start, end);
+    const container = document.getElementById("peptide-list");
+    container.innerHTML = "";
+
+    visible.forEach(p => {
+      const ourPrice = (p.price * 0.75).toFixed(2);
+      const card = document.createElement("div");
+      card.className = "peptide-card";
+      card.innerHTML = `
+        <h2>${p.name}</h2>
+        <p>${p.description}</p>
+        <p><strong>Dosing:</strong> ${p.dosage}</p>
+        <div class="price-box">
+          <div class="retail">Retail: $${p.price.toFixed(2)}</div>
+          <div class="deal">Our Deal: $${ourPrice}</div>
+        </div>
+        <button class="buy-btn" onclick="addToCart()">Buy Now</button>
+      `;
+      container.appendChild(card);
+    });
+
+    renderPagination(list);
+  }
+
+  function renderPagination(list) {
+    const totalPages = Math.ceil(list.length / peptidesPerPage);
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className = i === currentPage ? "active" : "";
+      btn.onclick = () => {
+        currentPage = i;
+        displayPeptides(filterPeptides(document.getElementById("searchBar").value));
+      };
+      pagination.appendChild(btn);
     }
+  }
 
-    function filterPeptides(query) {
-      const results = peptides.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-      );
-      displayPeptides(results);
-    }
+  function filterPeptides(query) {
+    return peptides.filter(p =>
+      p.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
 
-    function toggleTheme() {
-      document.body.classList.toggle("dark-mode");
-    }
+  function addToCart() {
+    cart++;
+    document.getElementById("cartCount").textContent = `Cart: ${cart}`;
+  }
 
-    // Initial render
-    displayPeptides(peptides);
-  </script>
+  document.getElementById("searchBar").addEventListener("input", e => {
+    currentPage = 1;
+    displayPeptides(filterPeptides(e.target.value));
+  });
+
+  displayPeptides(peptides);
+</script>
 </body>
 </html>
