@@ -303,8 +303,10 @@
       cart.forEach(item => {
         const div = document.createElement("div");
         div.className = "cart-item";
-        div.innerHTML = `<strong>${item.name}</strong> — $${item.price}`;
-        total += parseFloat(item.price);
+        div.innerHTML = `
+  <strong>${item.name}</strong> — $${item.price}
+  <button style="float:right; background:#ff4d4d; color:white; border:none; padding:2px 6px; border-radius:6px; cursor:pointer;" onclick="removeFromCart(${index})">Remove</button>
+`;
         cartItems.appendChild(div);
       });
       document.getElementById("cartTotal").textContent = total.toFixed(2);
