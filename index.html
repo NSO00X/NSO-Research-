@@ -42,6 +42,7 @@
       text-align: center;
       color: var(--accent-blue);
       margin-bottom: 20px;
+      font-size: 28px;
     }
 
     .top-bar {
@@ -58,6 +59,7 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .search {
@@ -81,6 +83,8 @@
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
     }
 
     body.dark .peptide-card {
@@ -97,27 +101,30 @@
     .peptide-card h2 {
       margin: 10px 0 5px;
       color: var(--accent-blue);
+      font-size: 16px;
     }
 
     .price-line {
       text-decoration: line-through;
       color: #999;
+      font-size: 14px;
     }
 
     .deal {
       font-weight: bold;
       color: #00c37a;
+      margin-bottom: 10px;
     }
 
     .buy-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
+      padding: 8px 12px;
       background: var(--accent-blue);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
     }
 
     .cart-icon {
@@ -131,39 +138,7 @@
       font-weight: bold;
       z-index: 999;
       cursor: pointer;
-    }
-
-    .cart-overlay {
-      position: fixed;
-      top: 0;
-      right: -400px;
-      width: 300px;
-      height: 100%;
-      background: #fff;
-      color: #000;
-      box-shadow: -5px 0 10px rgba(0,0,0,0.2);
-      transition: right 0.3s ease;
-      padding: 20px;
-      z-index: 999;
-    }
-
-    .cart-overlay.open {
-      right: 0;
-    }
-
-    .cart-item {
-      margin-bottom: 10px;
-      font-size: 14px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 6px;
-    }
-
-    .remove-btn {
-      background: none;
-      color: red;
-      font-size: 12px;
-      cursor: pointer;
-      border: none;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
     .pagination {
@@ -181,29 +156,82 @@
       cursor: pointer;
     }
 
-    .checkout-btn {
-      margin-top: 10px;
-      background: #00c37a;
-      border: none;
-      padding: 10px;
-      width: 100%;
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .toggle {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+
+    /* Age Gate Styles */
+    #ageGate {
+      position: fixed;
+      z-index: 99999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #ageGate .popup {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+      width: 350px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    #ageGate h2 {
+      margin-bottom: 20px;
+      color: #007aff;
+    }
+
+    #ageGate label {
+      font-size: 16px;
+      margin: 0 15px;
+    }
+
+    #ageGate input[type="checkbox"] {
+      margin-right: 6px;
+    }
+
+    #ageGate button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #007aff;
       color: white;
-      border-radius: 8px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="cart-icon" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
-
-  <div class="cart-overlay" id="cartDrawer">
-    <h3>Your Cart</h3>
-    <button onclick="toggleCart()">Close</button>
-    <div id="cartItems"></div>
-    <p><strong>Total:</strong> $<span id="cartTotal">0.00</span></p>
-    <button class="checkout-btn" onclick="goToCheckout()">Checkout</button>
+  <!-- AGE VERIFICATION POPUP -->
+  <div id="ageGate">
+    <div class="popup">
+      <h2>Are you 21 or older?</h2>
+      <div>
+        <label><input type="checkbox" id="yesBox" onclick="toggleCheckbox('yes')"> Yes</label>
+        <label><input type="checkbox" id="noBox" onclick="toggleCheckbox('no')"> No</label>
+      </div>
+      <button onclick="submitAgeGate()">Enter Site</button>
+    </div>
   </div>
 
+  <!-- MAIN WEBSITE CONTENT -->
+  <div class="cart-icon">🛒</div>
   <div class="container">
     <div class="top-bar">
       <h1>NSO Research</h1>
@@ -224,40 +252,29 @@
       localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
     });
 
-    function toggleCart() {
-      document.getElementById('cartDrawer').classList.toggle('open');
-      updateCartDisplay();
-    }
-
-    function goToCheckout() {
-      window.location.href = "/checkout.html";
-    }
-
-    const peptides = Array.from({length: 60}).map((_, i) => {
-      const price = (100 + i * 1.5).toFixed(2);
-      const deal = (price * 0.75).toFixed(2);
+    const peptides = Array.from({length: 30}).map((_, i) => {
+      const basePrice = 100 + i * 1.5;
+      const discount = (basePrice * 0.75).toFixed(2);
       return {
-        name: `Peptide ${i + 1}`,
-        image: `https://via.placeholder.com/300x160?text=Peptide+${i + 1}`,
+        name: "Peptide " + (i + 1),
+        image: "https://via.placeholder.com/300x160?text=Peptide+" + (i + 1),
         desc: "Premium research peptide backed by clinical insight.",
         dosage: "250–500mcg/day",
-        full: "This peptide supports performance, recovery, and longevity.",
-        price,
-        deal
+        price: basePrice.toFixed(2),
+        deal: discount
       };
     });
 
-    let currentPage = 1;
     const itemsPerPage = 10;
+    let currentPage = 1;
 
     function displayPeptides(list, page = 1) {
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      const items = list.slice(start, end);
-
+      const shown = list.slice(start, end);
       const grid = document.getElementById("peptide-list");
       grid.innerHTML = "";
-      items.forEach(p => {
+      shown.forEach(p => {
         const card = document.createElement("div");
         card.className = "peptide-card";
         card.innerHTML = `
@@ -265,9 +282,9 @@
           <h2>${p.name}</h2>
           <p>${p.desc}</p>
           <p><strong>Dosing:</strong> ${p.dosage}</p>
-          <p class="price-line">$${p.price}</p>
+          <p class="price-line">Retail: $${p.price}</p>
           <p class="deal">Our Deal: $${p.deal}</p>
-          <button class="buy-btn" onclick="addToCart('${p.name}', ${p.deal})">Buy Now</button>
+          <button class="buy-btn">Buy Now</button>
         `;
         grid.appendChild(card);
       });
@@ -279,7 +296,10 @@
         const btn = document.createElement("button");
         btn.textContent = i;
         if (i === page) btn.disabled = true;
-        btn.onclick = () => displayPeptides(peptides, i);
+        btn.onclick = () => {
+          currentPage = i;
+          displayPeptides(peptides, i);
+        };
         pagination.appendChild(btn);
       }
     }
@@ -291,40 +311,26 @@
       displayPeptides(filtered, 1);
     }
 
-    function addToCart(name, price) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push({ name, price });
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartDisplay();
+    // AGE GATE FUNCTIONS
+    function toggleCheckbox(choice) {
+      document.getElementById("yesBox").checked = (choice === "yes");
+      document.getElementById("noBox").checked = (choice === "no");
     }
 
-    function removeFromCart(index) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartDisplay();
+    function submitAgeGate() {
+      const yes = document.getElementById("yesBox").checked;
+      const no = document.getElementById("noBox").checked;
+      if (!yes && !no) {
+        alert("Please select an option.");
+        return;
+      }
+      if (yes) {
+        document.getElementById("ageGate").style.display = "none";
+      } else {
+        window.location.href = "https://www.youtubekids.com/";
+      }
     }
 
-    function updateCartDisplay() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      document.getElementById("cartCount").textContent = cart.length;
-      const cartItems = document.getElementById("cartItems");
-      cartItems.innerHTML = "";
-      let total = 0;
-      cart.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "cart-item";
-        div.innerHTML = `
-          <strong>${item.name}</strong> — $${item.price}
-          <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
-        `;
-        total += parseFloat(item.price);
-        cartItems.appendChild(div);
-      });
-      document.getElementById("cartTotal").textContent = total.toFixed(2);
-    }
-
-    updateCartDisplay();
     displayPeptides(peptides, currentPage);
   </script>
 </body>
