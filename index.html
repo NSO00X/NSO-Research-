@@ -12,19 +12,16 @@
       background: #12121c;
       color: #f0f0f0;
     }
-
     .container {
       max-width: 960px;
       margin: 0 auto;
       padding: 40px 20px;
     }
-
     h1, h2 {
       text-align: center;
       color: #61dafb;
       margin-bottom: 20px;
     }
-
     .search {
       width: 100%;
       padding: 15px;
@@ -35,27 +32,27 @@
       background: #1f1f2e;
       color: #fff;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
     }
-
     .peptide-card {
       background: #1e1e2f;
       border-radius: 20px;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
       cursor: pointer;
+      transition: transform 0.2s ease;
     }
-
+    .peptide-card:hover {
+      transform: scale(1.02);
+    }
     .peptide-card h2 {
       color: #61dafb;
       margin-bottom: 10px;
       font-size: 20px;
     }
-
     .vendor {
       margin-top: 10px;
       background: #2c2c44;
@@ -63,13 +60,11 @@
       padding: 10px;
       font-size: 13px;
     }
-
     .summary {
       margin-top: 10px;
       font-weight: bold;
       color: #00ff88;
     }
-
     .details {
       display: none;
       margin-top: 15px;
@@ -78,15 +73,12 @@
       padding: 15px;
       font-size: 13px;
     }
-
     .peptide-card.open .details {
       display: block;
     }
-
     .section {
       margin-top: 60px;
     }
-
     input, button {
       padding: 10px;
       border-radius: 8px;
@@ -94,14 +86,12 @@
       margin: 5px;
       font-size: 14px;
     }
-
     #vendor-list .vendor {
       background: #1f1f2e;
       margin-bottom: 10px;
       padding: 10px;
       border-radius: 10px;
     }
-
     footer {
       text-align: center;
       margin-top: 50px;
@@ -141,292 +131,293 @@
   </footer>
 
   <script>
-    const peptides = [
-      {
-  name: "AOD-9604",
-  description: "Fat-burning peptide derived from HGH.",
-  dosage: "250–500mcg/day",
-  vendors: [{ name: "Amino Asylum", price: 29.99 }],
-  details: "Stimulates lipolysis and inhibits lipogenesis. Often used in fat loss protocols."
-},
-{
-  name: "Thymosin Alpha-1",
-  description: "Immune-modulating peptide.",
-  dosage: "1.6mg/week",
-  vendors: [{ name: "Peptide Sciences", price: 49.99 }],
-  details: "Enhances immune system activity, often used in chronic infection recovery."
-},
-{
-  name: "Follistatin 344",
-  description: "Muscle growth enhancer by inhibiting myostatin.",
-  dosage: "100–300mcg 1–2x/week",
-  vendors: [{ name: "Modern Amino", price: 99.99 }],
-  details: "May significantly boost lean muscle mass but with short activity duration."
-},
-{
-  name: "IGF-1 LR3",
-  description: "Growth factor peptide that promotes muscle repair.",
-  dosage: "20–50mcg/day",
-  vendors: [{ name: "Amino Asylum", price: 79.99 }],
-  details: "Long-acting IGF-1 analog. Enhances hypertrophy and nutrient partitioning."
-},
-{
-  name: "Mod-GRF (1-29)",
-  description: "Short-acting GHRH analog.",
-  dosage: "100–200mcg 1–3x/day",
-  vendors: [{ name: "Peptide Sciences", price: 34.99 }],
-  details: "Works synergistically with GHRPs like Ipamorelin or Hexarelin."
-},
-{
-  name: "Hexarelin",
-  description: "Powerful GH secretagogue.",
-  dosage: "100–200mcg 1–2x/day",
-  vendors: [{ name: "Modern Amino", price: 42.99 }],
-  details: "Stronger GH pulse than Ipamorelin; may desensitize over time."
-},
-{
-  name: "Fragment 176-191",
-  description: "HGH fragment focused on fat loss.",
-  dosage: "250–500mcg/day",
-  vendors: [{ name: "Pure Rawz", price: 39.99 }],
-  details: "Targets adipose tissue without affecting blood sugar or growth promotion."
-},
-{
-  name: "Epitalon",
-  description: "Longevity peptide that activates telomerase.",
-  dosage: "5–10mg per cycle",
-  vendors: [{ name: "Peptide Sciences", price: 49.99 }],
-  details: "May increase lifespan, enhance sleep, and reduce signs of aging."
-},
-{
-  name: "MOTS-c",
-  description: "Mitochondrial-derived peptide for metabolic health.",
-  dosage: "5–15mg/week",
-  vendors: [{ name: "Amino Asylum", price: 69.99 }],
-  details: "Improves insulin sensitivity, endurance, and cellular energy output."
-},
-{
-  name: "N-Acetyl Selank",
-  description: "Stabilized version of Selank for mood and cognition.",
-  dosage: "250–500mcg/day",
-  vendors: [{ name: "Pure Rawz", price: 39.99 }],
-  details: "Longer-lasting than standard Selank. Used for anti-anxiety and clarity."
-},
-{
-  name: "N-Acetyl Semax",
-  description: "Stabilized version of Semax for cognitive enhancement.",
-  dosage: "300–600mcg/day",
-  vendors: [{ name: "Peptide Sciences", price: 44.99 }],
-  details: "More stable analog of Semax with stronger nootropic effect."
-},
-{
-  name: "LR3 IGF-1 DES",
-  description: "Short-acting IGF-1 analog used near muscle injections.",
-  dosage: "20–40mcg pre-workout",
-  vendors: [{ name: "Modern Amino", price: 84.99 }],
-  details: "Used locally for muscle repair. Short half-life. Inject around trained muscle."
-},
-{
-  name: "HGH",
-  description: "Human growth hormone for muscle, fat loss, and recovery.",
-  dosage: "1–4 IU/day",
-  vendors: [{ name: "Peptide Sciences", price: 149.99 }],
-  details: "Improves body composition, skin, and sleep. Long-term use needed."
-},
-{
-  name: "PEG-MGF",
-  description: "Muscle growth and recovery peptide.",
-  dosage: "200–400mcg post workout",
-  vendors: [{ name: "Amino Asylum", price: 44.99 }],
-  details: "Modified MGF that extends half-life for muscle regeneration."
-},
-{
-  name: "Kisspeptin-10",
-  description: "Stimulates natural LH and FSH secretion.",
-  dosage: "100–200mcg/day",
-  vendors: [{ name: "Pure Rawz", price: 32.99 }],
-  details: "May support testosterone production and fertility."
-},
-{
-  name: "Buserelin",
-  description: "GnRH agonist used for testosterone restart.",
-  dosage: "100mcg/day short-term",
-  vendors: [{ name: "Peptide Sciences", price: 49.99 }],
-  details: "Temporarily stimulates LH/FSH, then suppresses. Caution with cycling."
-},
-{
-  name: "Gonadorelin",
-  description: "GnRH analog used for HPTA stimulation.",
-  dosage: "100–150mcg 3x/week",
-  vendors: [{ name: "Amino Asylum", price: 29.99 }],
-  details: "Stimulates pituitary to release LH/FSH. Often used post-cycle."
-},
-{
-  name: "Oxytocin",
-  description: "Bonding and mood-enhancing neuropeptide.",
-  dosage: "10–20 IU pre-social activity",
-  vendors: [{ name: "Modern Amino", price: 24.99 }],
-  details: "Improves mood, bonding, empathy. Short-acting nasal spray preferred."
-},
-{
-  name: "Taltirelin",
-  description: "TRH analog for alertness and depression.",
-  dosage: "0.1–1mg as needed",
-  vendors: [{ name: "Peptide Sciences", price: 39.99 }],
-  details: "Used to boost dopamine, motivation, and alertness without tolerance."
-},
-{
-  name: "Liraglutide",
-  description: "GLP-1 analog for appetite suppression and blood sugar control.",
-  dosage: "0.6–1.8mg/day",
-  vendors: [{ name: "Pure Rawz", price: 79.99 }],
-  details: "Supports weight loss by slowing gastric emptying and reducing appetite."
+const peptides = [
+  {
+    name: "BPC-157",
+    description: "Promotes healing of muscles, nerves, and ligaments.",
+    dosage: "250–500mcg/day",
+    vendors: [
+      { name: "Modern Amino", price: 29.99 },
+      { name: "Amino Asylum", price: 24.99 }
+    ],
+    details: "Great for soft tissue repair, gut healing, and systemic recovery."
+  },
+  {
+    name: "Semax",
+    description: "Cognitive enhancer and neuroprotective agent.",
+    dosage: "300–600mcg/day",
+    vendors: [
+      { name: "Peptide Sciences", price: 39.99 }
+    ],
+    details: "Useful for focus, memory, and recovery from brain fatigue."
+  },
+  {
+    name: "TB-500",
+    description: "Tissue and muscle repair peptide often used for injury recovery.",
+    dosage: "2.0–2.5mg twice weekly (loading phase)",
+    vendors: [
+      { name: "Amino Asylum", price: 49.99 },
+      { name: "Modern Amino", price: 44.99 }
+    ],
+    details: "Promotes healing of ligaments and tendons. Often stacked with BPC-157."
+  },
+  {
+    name: "GHK-Cu",
+    description: "Copper peptide for anti-aging and skin regeneration.",
+    dosage: "1–2mg/day",
+    vendors: [
+      { name: "Peptide Sciences", price: 59.99 },
+      { name: "Pure Rawz", price: 54.99 }
+    ],
+    details: "Improves skin elasticity, wound healing, and hair regrowth."
+  },
+  {
+    name: "DSIP",
+    description: "Sleep-promoting peptide for stress recovery.",
+    dosage: "100–500mcg before bed",
+    vendors: [
+      { name: "Modern Amino", price: 34.99 }
+    ],
+    details: "May help regulate sleep cycles and reduce cortisol."
+  },
+  {
+    name: "PT-141",
+    description: "Used for libido enhancement in men and women.",
+    dosage: "1–2mg 30–60 mins before activity",
+    vendors: [
+      { name: "Peptide Sciences", price: 49.99 },
+      { name: "Amino Asylum", price: 44.99 }
+    ],
+    details: "FDA-approved for female sexual dysfunction."
+  },
+  {
+    name: "Melanotan II",
+    description: "Tanning peptide that stimulates melanin production.",
+    dosage: "250–500mcg/day (build up slowly)",
+    vendors: [
+      { name: "Pure Rawz", price: 39.99 }
+    ],
+    details: "Darkens skin, may enhance libido."
+  },
+  {
+    name: "CJC-1295",
+    description: "Stimulates growth hormone release.",
+    dosage: "250–500mcg 1–2x/day",
+    vendors: [
+      { name: "Amino Asylum", price: 44.99 }
+    ],
+    details: "GHRH analog that enhances GH pulse frequency."
+  },
+  {
+    name: "Ipamorelin",
+    description: "GH secretagogue often stacked with CJC-1295.",
+    dosage: "200–300mcg 1–2x/day",
+    vendors: [
+      { name: "Modern Amino", price: 39.99 }
+    ],
+    details: "Does not increase prolactin or ghrelin."
+  },
+  {
+    name: "Tesamorelin",
+    description: "Reduces visceral fat; approved for HIV-related lipodystrophy.",
+    dosage: "1–2mg/day",
+    vendors: [
+      { name: "Peptide Sciences", price: 64.99 }
+    ],
+    details: "GHRH analog. Also studied for general fat loss."
+  },
+    {
+    name: "AOD-9604",
+    description: "Fat-burning peptide derived from HGH.",
+    dosage: "250–500mcg/day",
+    vendors: [{ name: "Amino Asylum", price: 29.99 }],
+    details: "Stimulates lipolysis and inhibits lipogenesis. Often used in fat loss protocols."
+  },
+  {
+    name: "Thymosin Alpha-1",
+    description: "Immune-modulating peptide.",
+    dosage: "1.6mg/week",
+    vendors: [{ name: "Peptide Sciences", price: 49.99 }],
+    details: "Enhances immune system activity, often used in chronic infection recovery."
+  },
+  {
+    name: "Follistatin 344",
+    description: "Muscle growth enhancer by inhibiting myostatin.",
+    dosage: "100–300mcg 1–2x/week",
+    vendors: [{ name: "Modern Amino", price: 99.99 }],
+    details: "May significantly boost lean muscle mass but with short activity duration."
+  },
+  {
+    name: "IGF-1 LR3",
+    description: "Growth factor peptide that promotes muscle repair.",
+    dosage: "20–50mcg/day",
+    vendors: [{ name: "Amino Asylum", price: 79.99 }],
+    details: "Long-acting IGF-1 analog. Enhances hypertrophy and nutrient partitioning."
+  },
+  {
+    name: "Mod-GRF (1-29)",
+    description: "Short-acting GHRH analog.",
+    dosage: "100–200mcg 1–3x/day",
+    vendors: [{ name: "Peptide Sciences", price: 34.99 }],
+    details: "Works synergistically with GHRPs like Ipamorelin or Hexarelin."
+  },
+  {
+    name: "Hexarelin",
+    description: "Powerful GH secretagogue.",
+    dosage: "100–200mcg 1–2x/day",
+    vendors: [{ name: "Modern Amino", price: 42.99 }],
+    details: "Stronger GH pulse than Ipamorelin; may desensitize over time."
+  },
+  {
+    name: "Fragment 176-191",
+    description: "HGH fragment focused on fat loss.",
+    dosage: "250–500mcg/day",
+    vendors: [{ name: "Pure Rawz", price: 39.99 }],
+    details: "Targets adipose tissue without affecting blood sugar or growth promotion."
+  },
+  {
+    name: "Epitalon",
+    description: "Longevity peptide that activates telomerase.",
+    dosage: "5–10mg per cycle",
+    vendors: [{ name: "Peptide Sciences", price: 49.99 }],
+    details: "May increase lifespan, enhance sleep, and reduce signs of aging."
+  },
+  {
+    name: "MOTS-c",
+    description: "Mitochondrial-derived peptide for metabolic health.",
+    dosage: "5–15mg/week",
+    vendors: [{ name: "Amino Asylum", price: 69.99 }],
+    details: "Improves insulin sensitivity, endurance, and cellular energy output."
+  },
+  {
+    name: "N-Acetyl Selank",
+    description: "Stabilized version of Selank for mood and cognition.",
+    dosage: "250–500mcg/day",
+    vendors: [{ name: "Pure Rawz", price: 39.99 }],
+    details: "Longer-lasting than standard Selank. Used for anti-anxiety and clarity."
+  },
+    {
+    name: "N-Acetyl Semax",
+    description: "Stabilized version of Semax for cognitive enhancement.",
+    dosage: "300–600mcg/day",
+    vendors: [{ name: "Peptide Sciences", price: 44.99 }],
+    details: "More stable analog of Semax with stronger nootropic effect."
+  },
+  {
+    name: "LR3 IGF-1 DES",
+    description: "Short-acting IGF-1 analog used near muscle injections.",
+    dosage: "20–40mcg pre-workout",
+    vendors: [{ name: "Modern Amino", price: 84.99 }],
+    details: "Used locally for muscle repair. Short half-life. Inject around trained muscle."
+  },
+  {
+    name: "HGH",
+    description: "Human growth hormone for muscle, fat loss, and recovery.",
+    dosage: "1–4 IU/day",
+    vendors: [{ name: "Peptide Sciences", price: 149.99 }],
+    details: "Improves body composition, skin, and sleep. Long-term use needed."
+  },
+  {
+    name: "PEG-MGF",
+    description: "Muscle growth and recovery peptide.",
+    dosage: "200–400mcg post workout",
+    vendors: [{ name: "Amino Asylum", price: 44.99 }],
+    details: "Modified MGF that extends half-life for muscle regeneration."
+  },
+  {
+    name: "Kisspeptin-10",
+    description: "Stimulates natural LH and FSH secretion.",
+    dosage: "100–200mcg/day",
+    vendors: [{ name: "Pure Rawz", price: 32.99 }],
+    details: "May support testosterone production and fertility."
+  },
+  {
+    name: "Buserelin",
+    description: "GnRH agonist used for testosterone restart.",
+    dosage: "100mcg/day short-term",
+    vendors: [{ name: "Peptide Sciences", price: 49.99 }],
+    details: "Temporarily stimulates LH/FSH, then suppresses. Caution with cycling."
+  },
+  {
+    name: "Gonadorelin",
+    description: "GnRH analog used for HPTA stimulation.",
+    dosage: "100–150mcg 3x/week",
+    vendors: [{ name: "Amino Asylum", price: 29.99 }],
+    details: "Stimulates pituitary to release LH/FSH. Often used post-cycle."
+  },
+  {
+    name: "Oxytocin",
+    description: "Bonding and mood-enhancing neuropeptide.",
+    dosage: "10–20 IU pre-social activity",
+    vendors: [{ name: "Modern Amino", price: 24.99 }],
+    details: "Improves mood, bonding, empathy. Short-acting nasal spray preferred."
+  },
+  {
+    name: "Taltirelin",
+    description: "TRH analog for alertness and depression.",
+    dosage: "0.1–1mg as needed",
+    vendors: [{ name: "Peptide Sciences", price: 39.99 }],
+    details: "Used to boost dopamine, motivation, and alertness without tolerance."
+  },
+  {
+    name: "Liraglutide",
+    description: "GLP-1 analog for appetite suppression and blood sugar control.",
+    dosage: "0.6–1.8mg/day",
+    vendors: [{ name: "Pure Rawz", price: 79.99 }],
+    details: "Supports weight loss by slowing gastric emptying and reducing appetite."
+  }
+];
+
+// Load all peptides
+function displayPeptides(list) {
+  const container = document.getElementById("peptide-list");
+  container.innerHTML = "";
+  list.forEach(peptide => {
+    const bestVendor = peptide.vendors.reduce((a, b) => a.price < b.price ? a : b);
+    const card = document.createElement("div");
+    card.className = "peptide-card";
+    card.innerHTML = `
+      <h2>${peptide.name}</h2>
+      <p>${peptide.description}</p>
+      <p><strong>Dosing:</strong> ${peptide.dosage}</p>
+      ${peptide.vendors.map(v => `<div class="vendor">${v.name} - $${v.price.toFixed(2)}</div>`).join("")}
+      <div class="summary">Best Deal: ${bestVendor.name} - $${bestVendor.price.toFixed(2)}</div>
+      <div class="details">${peptide.details}</div>
+    `;
+    card.addEventListener("click", () => {
+      card.classList.toggle("open");
+    });
+    container.appendChild(card);
+  });
 }
-          {
-        name: "BPC-157",
-        description: "Promotes healing of muscles, nerves, and ligaments.",
-        dosage: "250–500mcg/day",
-        vendors: [
-          { name: "Modern Amino", price: 29.99 },
-          { name: "Amino Asylum", price: 24.99 }
-        ],
-        details: "Great for soft tissue repair, gut healing, and systemic recovery."
-      },
-      {
-        name: "Semax",
-        description: "Cognitive enhancer and neuroprotective agent.",
-        dosage: "300–600mcg/day",
-        vendors: [
-          { name: "Peptide Sciences", price: 39.99 }
-        ],
-        details: "Useful for focus, memory, and recovery from brain fatigue."
-      },
-      {
-        name: "TB-500",
-        description: "Tissue and muscle repair peptide often used for injury recovery.",
-        dosage: "2.0–2.5mg twice weekly (loading phase)",
-        vendors: [
-          { name: "Amino Asylum", price: 49.99 },
-          { name: "Modern Amino", price: 44.99 }
-        ],
-        details: "Promotes healing of ligaments and tendons. Often stacked with BPC-157."
-      },
-      {
-        name: "GHK-Cu",
-        description: "Copper peptide for anti-aging and skin regeneration.",
-        dosage: "1–2mg/day",
-        vendors: [
-          { name: "Peptide Sciences", price: 59.99 },
-          { name: "Pure Rawz", price: 54.99 }
-        ],
-        details: "Improves skin elasticity, wound healing, and hair regrowth."
-      },
-      {
-        name: "DSIP",
-        description: "Sleep-promoting peptide for stress recovery.",
-        dosage: "100–500mcg before bed",
-        vendors: [
-          { name: "Modern Amino", price: 34.99 }
-        ],
-        details: "May help regulate sleep cycles and reduce cortisol."
-      },
-      {
-        name: "PT-141",
-        description: "Used for libido enhancement in men and women.",
-        dosage: "1–2mg 30–60 mins before activity",
-        vendors: [
-          { name: "Peptide Sciences", price: 49.99 },
-          { name: "Amino Asylum", price: 44.99 }
-        ],
-        details: "FDA-approved for female sexual dysfunction."
-      },
-      {
-        name: "Melanotan II",
-        description: "Tanning peptide that stimulates melanin production.",
-        dosage: "250–500mcg/day (build up slowly)",
-        vendors: [
-          { name: "Pure Rawz", price: 39.99 }
-        ],
-        details: "Darkens skin, may enhance libido."
-      },
-      {
-        name: "CJC-1295",
-        description: "Stimulates growth hormone release.",
-        dosage: "250–500mcg 1–2x/day",
-        vendors: [
-          { name: "Amino Asylum", price: 44.99 }
-        ],
-        details: "GHRH analog that enhances GH pulse frequency."
-      },
-      {
-        name: "Ipamorelin",
-        description: "GH secretagogue often stacked with CJC-1295.",
-        dosage: "200–300mcg 1–2x/day",
-        vendors: [
-          { name: "Modern Amino", price: 39.99 }
-        ],
-        details: "Does not increase prolactin or ghrelin."
-      },
-      {
-        name: "Tesamorelin",
-        description: "Reduces visceral fat; approved for HIV-related lipodystrophy.",
-        dosage: "1–2mg/day",
-        vendors: [
-          { name: "Peptide Sciences", price: 64.99 }
-        ],
-        details: "GHRH analog. Also studied for general fat loss."
-      }
-    ];
 
-    function displayPeptides(list) {
-      const container = document.getElementById("peptide-list");
-      container.innerHTML = "";
-      list.forEach(peptide => {
-        const bestVendor = peptide.vendors.reduce((a, b) => a.price < b.price ? a : b);
-        const card = document.createElement("div");
-        card.className = "peptide-card";
-        card.innerHTML = `
-          <h2>${peptide.name}</h2>
-          <p>${peptide.description}</p>
-          <p><strong>Dosing:</strong> ${peptide.dosage}</p>
-          ${peptide.vendors.map(v => `<div class="vendor">${v.name} - $${v.price.toFixed(2)}</div>`).join("")}
-          <div class="summary">Best Deal: ${bestVendor.name} - $${bestVendor.price.toFixed(2)}</div>
-          <div class="details">${peptide.details}</div>
-        `;
-        card.addEventListener("click", () => {
-          card.classList.toggle("open");
-        });
-        container.appendChild(card);
-      });
-    }
+function filterPeptides(query) {
+  const filtered = peptides.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase())
+  );
+  displayPeptides(filtered);
+}
 
-    function filterPeptides(query) {
-      const filtered = peptides.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-      );
-      displayPeptides(filtered);
-    }
+function calculateDose() {
+  const vial = parseFloat(document.getElementById("vialAmount").value);
+  const water = parseFloat(document.getElementById("waterAmount").value);
+  const dose = parseFloat(document.getElementById("doseAmount").value);
+  const result = document.getElementById("calcResult");
 
-    function calculateDose() {
-      const vial = parseFloat(document.getElementById("vialAmount").value);
-      const water = parseFloat(document.getElementById("waterAmount").value);
-      const dose = parseFloat(document.getElementById("doseAmount").value);
-      const result = document.getElementById("calcResult");
+  if (!vial || !water || !dose) {
+    result.textContent = "Please fill out all fields.";
+    return;
+  }
 
-      if (!vial || !water || !dose) {
-        result.textContent = "Please fill out all fields.";
-        return;
-      }
+  const totalMcg = vial * 1000;
+  const mcgPerMl = totalMcg / water;
+  const mlPerDose = dose / mcgPerMl;
+  const units = mlPerDose * 100;
 
-      const totalMcg = vial * 1000;
-      const mcgPerMl = totalMcg / water;
-      const mlPerDose = dose / mcgPerMl;
-      const units = mlPerDose * 100;
+  result.textContent = `Inject ${units.toFixed(1)} IU (insulin units) for ${dose} mcg.`;
+}
 
-      result.textContent = `Inject ${units.toFixed(1)} IU (insulin units) for ${dose} mcg.`;
-    }
-
-    displayPeptides(peptides);
-  </script>
+displayPeptides(peptides);
+</script>
 </body>
 </html>
