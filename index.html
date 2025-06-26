@@ -3,242 +3,281 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSO Research — Peptide Store</title>
+  <title>NSO Research — Premium Peptides</title>
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #f7f8fa;
-      color: #111;
+    :root {
+      --bg-dark: #12121c;
+      --bg-light: #ffffff;
+      --primary: #007aff;
+      --text-dark: #f0f0f0;
+      --text-light: #000000;
+      --card-bg: #1f1f2e;
+      --radius: 16px;
+      --font: 'Segoe UI', Tahoma, sans-serif;
     }
 
-    .dark-mode {
-      background: #12121c;
-      color: #f0f0f0;
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
       max-width: 1100px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 30px 20px;
     }
 
-    h1 {
-      font-size: 32px;
+    header {
       text-align: center;
-      margin-bottom: 30px;
+      padding: 20px 0;
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 32px;
+      font-weight: 600;
     }
 
     .search {
       width: 100%;
-      padding: 15px;
+      padding: 12px;
+      margin: 20px 0;
+      border-radius: var(--radius);
+      border: none;
       font-size: 16px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      margin-bottom: 30px;
+      background: #1f1f2e;
+      color: white;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
 
     .peptide-card {
-      background: white;
-      border-radius: 16px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
       padding: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      position: relative;
-      transition: all 0.2s ease;
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
 
     .peptide-card:hover {
-      transform: translateY(-4px);
+      transform: scale(1.02);
     }
 
     .peptide-card h2 {
-      margin: 0 0 8px;
-      font-size: 20px;
+      color: var(--primary);
+      font-size: 18px;
+      margin-bottom: 8px;
     }
 
     .peptide-card p {
       font-size: 14px;
-      margin: 6px 0;
+      line-height: 1.5;
     }
 
-    .price-box {
-      margin: 10px 0;
+    .price-block {
+      margin-top: 10px;
+      font-size: 15px;
     }
 
-    .price-box .retail {
-      text-decoration: line-through;
-      color: #999;
-      font-size: 14px;
+    .price-block del {
+      color: #888;
+      margin-right: 8px;
     }
 
-    .price-box .deal {
-      font-size: 16px;
-      color: #007aff;
-      font-weight: bold;
+    .deal {
+      color: #00ff88;
+      font-weight: 600;
     }
 
     .buy-btn {
-      background: #007aff;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 12px;
       font-weight: 500;
-      font-size: 14px;
-      margin-top: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
     .buy-btn:hover {
-      background: #0060cc;
+      background: #005fcc;
     }
 
     .pagination {
-      margin-top: 40px;
       text-align: center;
+      margin: 30px 0 10px;
     }
 
     .pagination button {
+      background: none;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 16px;
       margin: 0 5px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background: #eaeaea;
+      border-radius: 10px;
       cursor: pointer;
     }
 
-    .pagination button.active {
-      background: #007aff;
-      color: white;
-      font-weight: bold;
+    .product-view {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
     }
 
-    .cart-count {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #007aff;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .product-view img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .shipping-banner {
+      background: #333;
+      color: #0f0;
+      padding: 8px 16px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="cart-count" id="cartCount">Cart: 0</div>
   <div class="container">
-    <h1>NSO Research — Premium Peptides</h1>
-    <input class="search" type="text" id="searchBar" placeholder="Search peptides..." />
+    <header>
+      <h1>NSO Research</h1>
+      <p>Premium Research Peptides — iOS-Inspired Experience</p>
+    </header>
+
+    <input class="search" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)" />
+
     <div class="grid" id="peptide-list"></div>
+
     <div class="pagination" id="pagination"></div>
+
+    <div class="product-view" id="productView">
+      <span class="back-btn" onclick="closeProduct()">← Back to all peptides</span>
+      <img id="productImg" src="" alt="Peptide Image" />
+      <h2 id="productName"></h2>
+      <p id="productDesc"></p>
+      <p class="shipping-banner">FREE SHIPPING ON ORDERS $200+</p>
+      <div class="price-block">
+        <del id="productAvg"></del>
+        <span class="deal" id="productOurDeal"></span>
+      </div>
+      <button class="buy-btn">Buy Now</button>
+    </div>
   </div>
+
   <script>
-  const peptides = [
-    { name: "BPC-157", description: "Heals muscles, gut, nerves.", dosage: "250–500mcg/day", price: 39.99 },
-    { name: "TB-500", description: "Injury recovery + healing.", dosage: "2.0–2.5mg/week", price: 59.99 },
-    { name: "GHK-Cu", description: "Skin, hair, wound healing.", dosage: "1–2mg/day", price: 79.99 },
-    { name: "DSIP", description: "Sleep + cortisol regulation.", dosage: "100–500mcg/night", price: 44.99 },
-    { name: "PT-141", description: "Libido enhancer (FDA-approved)", dosage: "1–2mg/usage", price: 69.99 },
-    { name: "CJC-1295", description: "Growth hormone booster.", dosage: "250–500mcg/day", price: 64.99 },
-    { name: "Ipamorelin", description: "GH release stimulator.", dosage: "200–300mcg/day", price: 59.99 },
-    { name: "Tesamorelin", description: "Visceral fat reduction.", dosage: "1–2mg/day", price: 94.99 },
-    { name: "AOD-9604", description: "Fat loss without GH spike.", dosage: "250–500mcg/day", price: 49.99 },
-    { name: "Semax", description: "Nootropic + neuroprotective.", dosage: "300–600mcg/day", price: 39.99 },
-    { name: "Selank", description: "Anti-anxiety neuropeptide.", dosage: "250–500mcg/day", price: 34.99 },
-    { name: "Thymosin Alpha-1", description: "Immune booster.", dosage: "1.6mg/week", price: 54.99 },
-    { name: "Follistatin 344", description: "Myostatin inhibitor.", dosage: "100–300mcg/week", price: 109.99 },
-    { name: "IGF-1 LR3", description: "Muscle repair + growth.", dosage: "20–50mcg/day", price: 89.99 },
-    { name: "Hexarelin", description: "Strong GH secretagogue.", dosage: "100–200mcg/day", price: 49.99 },
-    { name: "Mod-GRF 1-29", description: "Short GH stimulator.", dosage: "100–200mcg/day", price: 34.99 },
-    { name: "Epitalon", description: "Longevity + sleep peptide.", dosage: "5–10mg/cycle", price: 64.99 },
-    { name: "MOTS-c", description: "Metabolism + endurance.", dosage: "5–15mg/week", price: 74.99 },
-    { name: "Fragment 176-191", description: "Fat loss peptide.", dosage: "250–500mcg/day", price: 49.99 },
-    { name: "N-Acetyl Semax", description: "Stable nootropic form.", dosage: "300–600mcg/day", price: 44.99 },
-    { name: "N-Acetyl Selank", description: "Stable anxiolytic peptide.", dosage: "250–500mcg/day", price: 44.99 },
-    { name: "PEG-MGF", description: "Muscle growth + repair.", dosage: "200–400mcg/workout", price: 54.99 },
-    { name: "HGH", description: "GH therapy analog.", dosage: "1–4 IU/day", price: 149.99 },
-    { name: "Oxytocin", description: "Mood + bonding hormone.", dosage: "10–20 IU", price: 29.99 },
-    { name: "Kisspeptin-10", description: "Supports testosterone.", dosage: "100–200mcg/day", price: 39.99 },
-    { name: "Gonadorelin", description: "Stimulates LH/FSH.", dosage: "100–150mcg", price: 34.99 },
-    { name: "Buserelin", description: "Testosterone restart peptide.", dosage: "100mcg/day", price: 44.99 },
-    { name: "LR3 IGF-1 DES", description: "Localized IGF analog.", dosage: "20–40mcg", price: 94.99 },
-    { name: "Zinc Thymulin", description: "Hair + immune peptide.", dosage: "1–2mg/week", price: 59.99 },
-    { name: "GHRP-6", description: "GH releaser, increases hunger.", dosage: "100–300mcg/day", price: 39.99 }
-  ];
+    const peptides = [
+      { name: "BPC-157", short: "Tissue regeneration peptide.", long: "BPC-157 is a powerful synthetic peptide known for enhancing soft tissue and muscle repair, reducing inflammation, and supporting gut healing.", avg: 59.99, image: "https://via.placeholder.com/400x250?text=BPC-157" },
+      { name: "Semax", short: "Cognitive & neuroprotective peptide.", long: "Semax enhances memory, learning, and neuroplasticity. Often used for recovery from cognitive fatigue or stress.", avg: 49.99, image: "https://via.placeholder.com/400x250?text=Semax" },
+      { name: "DSIP", short: "Delta sleep-inducing peptide.", long: "DSIP helps regulate sleep patterns and reduces cortisol. Great for improving deep, restorative sleep cycles.", avg: 39.99, image: "https://via.placeholder.com/400x250?text=DSIP" },
+      { name: "GHK-Cu", short: "Skin regeneration & anti-aging.", long: "GHK-Cu is a copper-binding peptide that stimulates collagen, wound healing, and has potent anti-aging properties.", avg: 79.99, image: "https://via.placeholder.com/400x250?text=GHK-Cu" },
+      { name: "CJC-1295", short: "Growth hormone releasing hormone analog.", long: "CJC-1295 increases GH release without raising prolactin. Helps in muscle growth, fat loss, and sleep quality.", avg: 69.99, image: "https://via.placeholder.com/400x250?text=CJC-1295" },
+      { name: "Ipamorelin", short: "GH secretagogue, well tolerated.", long: "Ipamorelin stimulates GH release with minimal side effects. Often stacked with CJC-1295 for synergistic effects.", avg: 64.99, image: "https://via.placeholder.com/400x250?text=Ipamorelin" },
+      { name: "PT-141", short: "Libido-enhancing peptide.", long: "PT-141 is used to boost sexual desire and arousal. FDA-approved for female sexual dysfunction. Works for both sexes.", avg: 74.99, image: "https://via.placeholder.com/400x250?text=PT-141" },
+      { name: "Tesamorelin", short: "Fat loss via GH stimulation.", long: "Tesamorelin is a GHRH analog used for reducing visceral fat, especially in lipodystrophy. May benefit general weight loss too.", avg: 99.99, image: "https://via.placeholder.com/400x250?text=Tesamorelin" },
+      { name: "Thymosin Alpha-1", short: "Immune system modulator.", long: "Thymosin Alpha-1 supports immune function, used in viral infections and chronic immune stress. Can complement healing peptides.", avg: 54.99, image: "https://via.placeholder.com/400x250?text=Thymosin+Alpha-1" },
+      { name: "AOD-9604", short: "Fat-burning peptide (HGH fragment).", long: "AOD-9604 enhances lipolysis and blocks fat formation. Popular in cutting protocols and weight loss stacks.", avg: 44.99, image: "https://via.placeholder.com/400x250?text=AOD-9604" },
+      // Add 20+ more as needed
+    ];
 
-  const peptidesPerPage = 10;
-  let currentPage = 1;
-  let cart = 0;
+    let currentPage = 1;
+    const perPage = 10;
 
-  function displayPeptides(list) {
-    const start = (currentPage - 1) * peptidesPerPage;
-    const end = start + peptidesPerPage;
-    const visible = list.slice(start, end);
-    const container = document.getElementById("peptide-list");
-    container.innerHTML = "";
+    function displayPeptides() {
+      const container = document.getElementById("peptide-list");
+      const start = (currentPage - 1) * perPage;
+      const paginated = peptides.slice(start, start + perPage);
 
-    visible.forEach(p => {
-      const ourPrice = (p.price * 0.75).toFixed(2);
-      const card = document.createElement("div");
-      card.className = "peptide-card";
-      card.innerHTML = `
-        <h2>${p.name}</h2>
-        <p>${p.description}</p>
-        <p><strong>Dosing:</strong> ${p.dosage}</p>
-        <div class="price-box">
-          <div class="retail">Retail: $${p.price.toFixed(2)}</div>
-          <div class="deal">Our Deal: $${ourPrice}</div>
-        </div>
-        <button class="buy-btn" onclick="addToCart()">Buy Now</button>
-      `;
-      container.appendChild(card);
-    });
+      container.innerHTML = "";
+      paginated.forEach((pep, i) => {
+        const card = document.createElement("div");
+        card.className = "peptide-card";
+        card.innerHTML = `
+          <h2>${pep.name}</h2>
+          <p>${pep.short}</p>
+          <div class="price-block">
+            <del>$${pep.avg.toFixed(2)}</del>
+            <span class="deal">$${(pep.avg * 0.75).toFixed(2)}</span>
+          </div>
+          <button class="buy-btn" onclick="openProduct(${start + i})">View</button>
+        `;
+        container.appendChild(card);
+      });
 
-    renderPagination(list);
-  }
-
-  function renderPagination(list) {
-    const totalPages = Math.ceil(list.length / peptidesPerPage);
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
-
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.className = i === currentPage ? "active" : "";
-      btn.onclick = () => {
-        currentPage = i;
-        displayPeptides(filterPeptides(document.getElementById("searchBar").value));
-      };
-      pagination.appendChild(btn);
+      renderPagination();
     }
-  }
 
-  function filterPeptides(query) {
-    return peptides.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }
+    function renderPagination() {
+      const totalPages = Math.ceil(peptides.length / perPage);
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
 
-  function addToCart() {
-    cart++;
-    document.getElementById("cartCount").textContent = `Cart: ${cart}`;
-  }
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.onclick = () => {
+          currentPage = i;
+          displayPeptides();
+        };
+        if (i === currentPage) btn.style.fontWeight = "bold";
+        pagination.appendChild(btn);
+      }
+    }
 
-  document.getElementById("searchBar").addEventListener("input", e => {
-    currentPage = 1;
-    displayPeptides(filterPeptides(e.target.value));
-  });
+    function openProduct(index) {
+      const p = peptides[index];
+      document.getElementById("productView").style.display = "block";
+      document.getElementById("productName").textContent = p.name;
+      document.getElementById("productDesc").textContent = p.long;
+      document.getElementById("productAvg").textContent = `$${p.avg.toFixed(2)}`;
+      document.getElementById("productOurDeal").textContent = `$${(p.avg * 0.75).toFixed(2)}`;
+      document.getElementById("productImg").src = p.image;
+      document.getElementById("peptide-list").style.display = "none";
+      document.getElementById("pagination").style.display = "none";
+    }
 
-  displayPeptides(peptides);
-</script>
+    function closeProduct() {
+      document.getElementById("productView").style.display = "none";
+      document.getElementById("peptide-list").style.display = "grid";
+      document.getElementById("pagination").style.display = "block";
+    }
+
+    function filterPeptides(query) {
+      const val = query.toLowerCase();
+      const filtered = peptides.filter(p => p.name.toLowerCase().includes(val));
+      if (val && filtered.length) {
+        currentPage = 1;
+        peptides.length = 0;
+        Array.prototype.push.apply(peptides, filtered);
+      } else {
+        window.location.reload(); // reset
+      }
+      displayPeptides();
+    }
+
+    displayPeptides();
+  </script>
 </body>
 </html>
