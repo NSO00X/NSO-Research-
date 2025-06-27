@@ -41,14 +41,15 @@
     h1 {
       text-align: center;
       color: var(--accent-blue);
-      margin-bottom: 4px;
+      margin-bottom: 5px;
+      font-size: 28px;
     }
 
-    .subtitle {
+    .subheading {
       text-align: center;
-      color: gray;
       font-size: 14px;
       margin-bottom: 20px;
+      color: gray;
     }
 
     .top-bar {
@@ -58,7 +59,7 @@
       flex-wrap: wrap;
     }
 
-    .toggle, .login-btn {
+    .toggle {
       padding: 8px 14px;
       background: var(--accent-blue);
       color: white;
@@ -66,7 +67,6 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
-      margin-left: 8px;
     }
 
     .search {
@@ -91,6 +91,7 @@
       padding: 16px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       position: relative;
+      overflow: hidden;
     }
 
     body.dark .peptide-card {
@@ -133,131 +134,314 @@
       width: 100%;
     }
 
-    .login-modal {
+    .cart-icon {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      z-index: 1000;
-      display: none;
-      width: 90%;
-      max-width: 320px;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-blue);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 50px;
+      font-weight: bold;
+      z-index: 999;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
-    .modal-header {
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 300px;
+      height: 100%;
+      background: #fff;
+      color: #000;
+      box-shadow: -5px 0 10px rgba(0,0,0,0.2);
+      transition: right 0.3s ease;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .cart-overlay.open {
+      right: 0;
+    }
+
+    .cart-item {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+      font-size: 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 10px;
     }
 
-    .close-login {
-      background: none;
+    .cart-item button {
+      background: transparent;
       border: none;
-      font-size: 18px;
+      color: red;
       cursor: pointer;
-      margin-left: auto;
-      color: #666;
+      font-weight: bold;
     }
 
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-      display: none;
+    .pagination {
+      margin-top: 30px;
+      text-align: center;
     }
 
-    .modal-content input {
-      display: block;
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .modal-content button {
+    .pagination button {
       background: var(--accent-blue);
       color: white;
       border: none;
-      padding: 10px;
-      width: 100%;
+      padding: 6px 10px;
       border-radius: 6px;
+      margin: 0 3px;
       cursor: pointer;
+    }
+
+    #ai-assistant-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-blue);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    #ai-assistant-popup {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      z-index: 1001;
+      overflow: hidden;
+    }
+
+    .assistant-header {
+      background: var(--accent-blue);
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .assistant-header .assistant-close {
+      background: transparent;
+      color: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .assistant-body {
+      padding: 10px;
+    }
+
+    .assistant-body input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .assistant-body button {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent-blue);
+      color: white;
+      cursor: pointer;
+    }
+
+    .assistant-body #assistantResponse {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .toggle {
+        width: 100%;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="overlay" id="loginOverlay"></div>
+  <div class="cart-icon" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
+  <div class="cart-overlay" id="cartDrawer">
+    <h3>Your Cart</h3>
+    <button onclick="toggleCart()" style="margin-bottom: 10px; background: #eee; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer;">Close</button>
+    <div id="cartItems"></div>
+    <p><strong>Total:</strong> $<span id="cartTotal">0.00</span></p>
+  </div>
 
   <div class="container">
     <div class="top-bar">
       <h1>NSO Research</h1>
-      <div>
-        <button class="toggle" id="themeToggle">Toggle Theme</button>
-        <button class="login-btn" onclick="openLogin()">Login</button>
-      </div>
+      <button class="toggle" id="themeToggle">Toggle Theme</button>
     </div>
-    <p class="subtitle">Trusted Quality. Clinically Backed. Delivered Fast.</p>
-    <input class="search" type="text" placeholder="Search peptides...">
-    <div class="grid">
-      <!-- Example peptide card -->
-      <div class="peptide-card">
-        <img src="https://via.placeholder.com/300x160?text=Peptide+1" />
-        <h2>Peptide 1</h2>
-        <p>Premium research peptide backed by clinical insight.</p>
-        <p class="price-line">$100.00</p>
-        <p class="deal">Our Deal: $75.00</p>
-        <button class="buy-btn">Buy Now</button>
-      </div>
-    </div>
+    <div class="subheading">Trusted quality. Transparent results. Research-grade peptides.</div>
+    <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)">
+    <div class="grid" id="peptide-list"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
 
-  <!-- Login Modal -->
-  <div class="login-modal" id="loginModal">
-    <div class="modal-header">
-      <span>Login</span>
-      <button class="close-login" onclick="closeLogin()">×</button>
+  <!-- AI Assistant Button + Popup -->
+  <div id="ai-assistant-button" onclick="toggleAssistant()">💬</div>
+  <div id="ai-assistant-popup">
+    <div class="assistant-header">
+      <span>NSO AI Assistant</span>
+      <button class="assistant-close" onclick="toggleAssistant()">×</button>
     </div>
-    <div class="modal-content">
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
-      <button>Submit</button>
-      <p style="margin-top:10px; font-size: 14px;">Don’t have an account? <a href="#">Sign up</a></p>
+    <div class="assistant-body">
+      <p>Ask about peptides, dosing, or our store:</p>
+      <input type="text" id="assistantInput" placeholder="Type your question..." />
+      <button onclick="handleAssistant()">Ask</button>
+      <div id="assistantResponse"></div>
     </div>
   </div>
 
   <script>
     const themeToggle = document.getElementById("themeToggle");
-    const overlay = document.getElementById("loginOverlay");
-    const modal = document.getElementById("loginModal");
-
     if (localStorage.getItem("theme") === "dark") {
       document.body.classList.add("dark");
     }
-
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("dark");
       localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
     });
 
-    function openLogin() {
-      modal.style.display = "block";
-      overlay.style.display = "block";
+    function toggleCart() {
+      document.getElementById('cartDrawer').classList.toggle('open');
     }
 
-    function closeLogin() {
-      modal.style.display = "none";
-      overlay.style.display = "none";
+    function toggleAssistant() {
+      const popup = document.getElementById("ai-assistant-popup");
+      popup.style.display = popup.style.display === "block" ? "none" : "block";
     }
+
+    function handleAssistant() {
+      const input = document.getElementById("assistantInput").value.toLowerCase();
+      const response = document.getElementById("assistantResponse");
+
+      if (input.includes("dose") || input.includes("dosing")) {
+        response.textContent = "Most peptides are dosed between 250–500mcg per day, but check each label.";
+      } else if (input.includes("shipping")) {
+        response.textContent = "Shipping is FREE on orders over $200!";
+      } else {
+        response.textContent = "I'm still learning — try asking about dosage, shipping, or product info.";
+      }
+    }
+
+    const peptides = Array.from({length: 60}).map((_, i) => {
+      const basePrice = 100 + i * 1.5;
+      const discount = (basePrice * 0.75).toFixed(2);
+      return {
+        name: "Peptide " + (i + 1),
+        image: "https://via.placeholder.com/300x160?text=Peptide+" + (i + 1),
+        desc: "Premium research peptide backed by clinical insight.",
+        dosage: "250–500mcg/day",
+        full: "This peptide supports performance, recovery, and longevity.",
+        price: basePrice.toFixed(2),
+        deal: discount
+      };
+    });
+
+    const itemsPerPage = 5;
+    let currentPage = 1;
+
+    function displayPeptides(list, page = 1) {
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const shown = list.slice(start, end);
+
+      const grid = document.getElementById("peptide-list");
+      grid.innerHTML = "";
+      shown.forEach((p, index) => {
+        const card = document.createElement("div");
+        card.className = "peptide-card";
+        card.innerHTML = `
+          <img src="${p.image}">
+          <h2>${p.name}</h2>
+          <p>${p.desc}</p>
+          <p><strong>Dosing:</strong> ${p.dosage}</p>
+          <p class="price-line">$${p.price}</p>
+          <p class="deal">Our Deal: $${p.deal}</p>
+          <button class="buy-btn" onclick="addToCart('${p.name}', ${p.deal})">Buy Now</button>
+        `;
+        grid.appendChild(card);
+      });
+
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+      const pages = Math.ceil(list.length / itemsPerPage);
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        if (i === page) btn.disabled = true;
+        btn.onclick = () => {
+          currentPage = i;
+          displayPeptides(peptides, i);
+        };
+        pagination.appendChild(btn);
+      }
+    }
+
+    function filterPeptides(query) {
+      const filtered = peptides.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase())
+      );
+      displayPeptides(filtered, 1);
+    }
+
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push({ name, price });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      document.getElementById("cartCount").textContent = cart.length;
+      const cartItems = document.getElementById("cartItems");
+      cartItems.innerHTML = "";
+      let total = 0;
+      cart.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `<span><strong>${item.name}</strong> — $${item.price}</span><button onclick="removeFromCart(${index})">×</button>`;
+        total += parseFloat(item.price);
+        cartItems.appendChild(div);
+      });
+      document.getElementById("cartTotal").textContent = total.toFixed(2);
+    }
+
+    updateCartDisplay();
+    displayPeptides(peptides, currentPage);
   </script>
 </body>
 </html>
