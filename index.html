@@ -16,8 +16,8 @@
     }
 
     * {
-      box-sizing: border-box;
       transition: all 0.3s ease;
+      box-sizing: border-box;
     }
 
     body {
@@ -25,11 +25,6 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-light);
       color: var(--text-light);
-    }
-
-    body.dark {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
     }
 
     .container {
@@ -42,41 +37,22 @@
       text-align: center;
       color: var(--accent-blue);
       margin-bottom: 10px;
-      font-size: 28px;
     }
 
-    .subheading {
+    .tagline {
       text-align: center;
+      margin-bottom: 30px;
       font-size: 14px;
       color: #777;
-      margin-bottom: 30px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .toggle {
-      padding: 8px 14px;
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
     }
 
     .search {
       width: 100%;
       padding: 12px;
-      margin: 20px 0;
       font-size: 16px;
-      border: none;
       border-radius: 12px;
-      background: #eee;
+      border: 1px solid #ddd;
+      margin-bottom: 30px;
     }
 
     .grid {
@@ -90,10 +66,8 @@
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-
-    body.dark .peptide-card {
-      background: var(--card-bg-dark);
+      position: relative;
+      overflow: hidden;
     }
 
     .peptide-card img {
@@ -132,128 +106,96 @@
       width: 100%;
     }
 
-    .pagination {
-      margin-top: 30px;
-      text-align: center;
-    }
-
-    .pagination button {
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      margin: 0 3px;
-      cursor: pointer;
-    }
-
     /* AI Assistant Button */
-    .ai-assistant-button {
+    .ai-assistant-btn {
       position: fixed;
       bottom: 20px;
       right: 20px;
       background: var(--accent-blue);
       color: white;
-      padding: 12px 16px;
-      font-size: 16px;
-      border-radius: 40px;
+      padding: 10px 16px;
+      border-radius: 50px;
+      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    .ai-popup {
-      display: none;
+    .assistant-window {
       position: fixed;
       bottom: 80px;
       right: 20px;
-      background: white;
-      color: black;
       width: 300px;
-      max-height: 400px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      background: white;
+      color: #111;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 15px;
       z-index: 999;
-      overflow: hidden;
-      flex-direction: column;
+      display: none;
     }
 
-    .ai-popup-header {
-      background: var(--accent-blue);
-      color: white;
-      padding: 10px 12px;
-      font-weight: bold;
+    .assistant-window h4 {
+      margin-top: 0;
+      font-size: 16px;
     }
 
-    .ai-popup-body {
-      padding: 12px;
+    .assistant-window input {
+      width: 100%;
+      padding: 8px;
       font-size: 14px;
-      overflow-y: auto;
-      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .assistant-response {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="top-bar">
-      <h1>NSO Research</h1>
-      <button class="toggle" id="themeToggle">Toggle Theme</button>
-    </div>
-    <div class="subheading">Trusted. Tested. Premium peptides delivered fast.</div>
-
+    <h1>NSO Research</h1>
+    <p class="tagline">Premium quality. Research backed. Trusted by thousands.</p>
     <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)">
     <div class="grid" id="peptide-list"></div>
-    <div class="pagination" id="pagination"></div>
   </div>
 
-  <!-- AI Assistant UI -->
-  <div class="ai-popup" id="aiPopup">
-    <div class="ai-popup-header">NSO Assistant</div>
-    <div class="ai-popup-body">
-      Hi! I'm your peptide assistant. Ask me about dosages, usage, or browse recommendations.
-    </div>
+  <!-- AI Assistant Button -->
+  <div class="ai-assistant-btn" onclick="toggleAssistant()">💬 AI Help</div>
+
+  <!-- Assistant Window -->
+  <div class="assistant-window" id="assistant">
+    <h4>NSO Assistant</h4>
+    <input type="text" placeholder="Ask me anything..." onkeydown="handleAssistant(event)">
+    <div class="assistant-response" id="response"></div>
   </div>
-  <div class="ai-assistant-button" onclick="toggleAI()">💬 Ask NSO</div>
 
   <script>
-    const themeToggle = document.getElementById("themeToggle");
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-    }
-    themeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-    });
-
-    const peptides = Array.from({length: 60}).map((_, i) => {
-      const basePrice = 100 + i * 1.5;
+    const peptides = Array.from({length: 20}).map((_, i) => {
+      const basePrice = 100 + i * 2;
       const discount = (basePrice * 0.75).toFixed(2);
       return {
         name: "Peptide " + (i + 1),
         image: "https://via.placeholder.com/300x160?text=Peptide+" + (i + 1),
-        desc: "Premium research peptide backed by clinical insight.",
+        desc: "Premium research peptide for performance and recovery.",
         dosage: "250–500mcg/day",
-        full: "This peptide supports performance, recovery, and longevity.",
         price: basePrice.toFixed(2),
         deal: discount
       };
     });
 
-    const itemsPerPage = 5;
-    let currentPage = 1;
-
-    function displayPeptides(list, page = 1) {
-      const start = (page - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const shown = list.slice(start, end);
-
-      const grid = document.getElementById("peptide-list");
-      grid.innerHTML = "";
-      shown.forEach(p => {
+    function displayPeptides(list) {
+      const container = document.getElementById("peptide-list");
+      container.innerHTML = "";
+      list.forEach(p => {
         const card = document.createElement("div");
         card.className = "peptide-card";
         card.innerHTML = `
-          <img src="${p.image}">
+          <img src="${p.image}" alt="${p.name}">
           <h2>${p.name}</h2>
           <p>${p.desc}</p>
           <p><strong>Dosing:</strong> ${p.dosage}</p>
@@ -261,38 +203,41 @@
           <p class="deal">Our Deal: $${p.deal}</p>
           <button class="buy-btn">Buy Now</button>
         `;
-        grid.appendChild(card);
+        container.appendChild(card);
       });
-
-      const pagination = document.getElementById("pagination");
-      pagination.innerHTML = "";
-      const pages = Math.ceil(list.length / itemsPerPage);
-      for (let i = 1; i <= pages; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        if (i === page) btn.disabled = true;
-        btn.onclick = () => {
-          currentPage = i;
-          displayPeptides(peptides, i);
-        };
-        pagination.appendChild(btn);
-      }
     }
 
     function filterPeptides(query) {
       const filtered = peptides.filter(p =>
         p.name.toLowerCase().includes(query.toLowerCase())
       );
-      displayPeptides(filtered, 1);
+      displayPeptides(filtered);
     }
 
-    function toggleAI() {
-      const popup = document.getElementById("aiPopup");
-      popup.style.display = popup.style.display === "flex" ? "none" : "flex";
-      popup.style.flexDirection = "column";
+    displayPeptides(peptides);
+
+    // Assistant Logic
+    function toggleAssistant() {
+      const assistant = document.getElementById("assistant");
+      assistant.style.display = assistant.style.display === "block" ? "none" : "block";
     }
 
-    displayPeptides(peptides, currentPage);
+    function handleAssistant(event) {
+      if (event.key === "Enter") {
+        const input = event.target.value.toLowerCase();
+        const response = document.getElementById("response");
+        if (input.includes("dose") || input.includes("dosing")) {
+          response.innerText = "Typical dosing is 250–500mcg per day depending on the peptide.";
+        } else if (input.includes("buy") || input.includes("order")) {
+          response.innerText = "Click the Buy Now button under any peptide to add it to your cart.";
+        } else if (input.includes("ghk") || input.includes("bpc")) {
+          response.innerText = "GHK-Cu is a copper peptide known for skin regeneration, while BPC-157 supports tissue healing.";
+        } else {
+          response.innerText = "I'm still learning! Please rephrase your question.";
+        }
+        event.target.value = "";
+      }
+    }
   </script>
 </body>
 </html>
