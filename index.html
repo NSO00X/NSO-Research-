@@ -16,8 +16,8 @@
     }
 
     * {
-      transition: all 0.3s ease;
       box-sizing: border-box;
+      transition: all 0.3s ease;
     }
 
     body {
@@ -41,15 +41,15 @@
     h1 {
       text-align: center;
       color: var(--accent-blue);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-size: 28px;
     }
 
-    .tagline {
+    .subheading {
       text-align: center;
       font-size: 14px;
       color: #777;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .top-bar {
@@ -90,8 +90,6 @@
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      position: relative;
-      overflow: hidden;
     }
 
     body.dark .peptide-card {
@@ -134,69 +132,64 @@
       width: 100%;
     }
 
-    .ai-assistant {
+    .pagination {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .pagination button {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin: 0 3px;
+      cursor: pointer;
+    }
+
+    /* AI Assistant Button */
+    .ai-assistant-button {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 300px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
+      background: var(--accent-blue);
+      color: white;
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+
+    .ai-popup {
       display: none;
-      flex-direction: column;
-      font-size: 14px;
-      z-index: 999;
-    }
-
-    .ai-header {
-      background: var(--accent-blue);
-      color: white;
-      padding: 10px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .ai-body {
-      padding: 10px;
-      max-height: 250px;
-      overflow-y: auto;
-      background: #fafafa;
-    }
-
-    .ai-input {
-      display: flex;
-      border-top: 1px solid #ccc;
-    }
-
-    .ai-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-    }
-
-    .ai-input button {
-      padding: 10px;
-      border: none;
-      background: var(--accent-blue);
-      color: white;
-      cursor: pointer;
-    }
-
-    .chat-icon {
       position: fixed;
-      bottom: 20px;
+      bottom: 80px;
       right: 20px;
+      background: white;
+      color: black;
+      width: 300px;
+      max-height: 400px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 999;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .ai-popup-header {
       background: var(--accent-blue);
       color: white;
-      border-radius: 50%;
-      padding: 14px;
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 998;
+      padding: 10px 12px;
+      font-weight: bold;
+    }
+
+    .ai-popup-body {
+      padding: 12px;
+      font-size: 14px;
+      overflow-y: auto;
+      flex: 1;
     }
   </style>
 </head>
@@ -206,26 +199,21 @@
       <h1>NSO Research</h1>
       <button class="toggle" id="themeToggle">Toggle Theme</button>
     </div>
-    <div class="tagline">Precision-crafted peptides. Trusted, transparent, research-grade quality.</div>
+    <div class="subheading">Trusted. Tested. Premium peptides delivered fast.</div>
+
     <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)">
     <div class="grid" id="peptide-list"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
 
-  <!-- Chat icon and assistant -->
-  <div class="chat-icon" onclick="toggleAssistant()">💬</div>
-  <div class="ai-assistant" id="assistantBox">
-    <div class="ai-header">
-      NSO Assistant
-      <span style="cursor:pointer;" onclick="toggleAssistant()">✕</span>
-    </div>
-    <div class="ai-body" id="assistantLog">
-      <div><strong>NSO Assistant:</strong> Hi! Need help finding a peptide or using the calculator?</div>
-    </div>
-    <div class="ai-input">
-      <input type="text" id="assistantInput" placeholder="Ask a question...">
-      <button onclick="handleAssistant()">Send</button>
+  <!-- AI Assistant UI -->
+  <div class="ai-popup" id="aiPopup">
+    <div class="ai-popup-header">NSO Assistant</div>
+    <div class="ai-popup-body">
+      Hi! I'm your peptide assistant. Ask me about dosages, usage, or browse recommendations.
     </div>
   </div>
+  <div class="ai-assistant-button" onclick="toggleAI()">💬 Ask NSO</div>
 
   <script>
     const themeToggle = document.getElementById("themeToggle");
@@ -237,68 +225,74 @@
       localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
     });
 
-    function toggleAssistant() {
-      const box = document.getElementById("assistantBox");
-      box.style.display = box.style.display === "flex" ? "none" : "flex";
-    }
+    const peptides = Array.from({length: 60}).map((_, i) => {
+      const basePrice = 100 + i * 1.5;
+      const discount = (basePrice * 0.75).toFixed(2);
+      return {
+        name: "Peptide " + (i + 1),
+        image: "https://via.placeholder.com/300x160?text=Peptide+" + (i + 1),
+        desc: "Premium research peptide backed by clinical insight.",
+        dosage: "250–500mcg/day",
+        full: "This peptide supports performance, recovery, and longevity.",
+        price: basePrice.toFixed(2),
+        deal: discount
+      };
+    });
 
-    function handleAssistant() {
-      const input = document.getElementById("assistantInput");
-      const log = document.getElementById("assistantLog");
-      const message = input.value.trim();
-      if (!message) return;
-      log.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+    const itemsPerPage = 5;
+    let currentPage = 1;
 
-      let response = "I'm not sure how to answer that. Try asking about a peptide or dosage!";
-      if (message.toLowerCase().includes("dosage") || message.toLowerCase().includes("how much")) {
-        response = "Most peptides are dosed between 250–500mcg per day. Want help calculating it?";
-      } else if (message.toLowerCase().includes("ghk")) {
-        response = "GHK-Cu is known for promoting skin regeneration and healing. Typical dose: ~2mg daily.";
-      } else if (message.toLowerCase().includes("bpc")) {
-        response = "BPC-157 supports recovery from injury and gut health. Dosing: ~250–500mcg daily.";
+    function displayPeptides(list, page = 1) {
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const shown = list.slice(start, end);
+
+      const grid = document.getElementById("peptide-list");
+      grid.innerHTML = "";
+      shown.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "peptide-card";
+        card.innerHTML = `
+          <img src="${p.image}">
+          <h2>${p.name}</h2>
+          <p>${p.desc}</p>
+          <p><strong>Dosing:</strong> ${p.dosage}</p>
+          <p class="price-line">$${p.price}</p>
+          <p class="deal">Our Deal: $${p.deal}</p>
+          <button class="buy-btn">Buy Now</button>
+        `;
+        grid.appendChild(card);
+      });
+
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+      const pages = Math.ceil(list.length / itemsPerPage);
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        if (i === page) btn.disabled = true;
+        btn.onclick = () => {
+          currentPage = i;
+          displayPeptides(peptides, i);
+        };
+        pagination.appendChild(btn);
       }
-
-      log.innerHTML += `<div><strong>NSO Assistant:</strong> ${response}</div>`;
-      input.value = "";
-      log.scrollTop = log.scrollHeight;
     }
-
-    const peptides = Array.from({ length: 20 }).map((_, i) => ({
-      name: `Peptide ${i + 1}`,
-      image: `https://via.placeholder.com/300x160?text=Peptide+${i + 1}`,
-      desc: "Clinically respected and lab-tested for purity.",
-      dosage: "250–500mcg/day",
-      price: (120 + i * 5).toFixed(2),
-      deal: ((120 + i * 5) * 0.75).toFixed(2)
-    }));
 
     function filterPeptides(query) {
       const filtered = peptides.filter(p =>
         p.name.toLowerCase().includes(query.toLowerCase())
       );
-      displayPeptides(filtered);
+      displayPeptides(filtered, 1);
     }
 
-    function displayPeptides(list) {
-      const container = document.getElementById("peptide-list");
-      container.innerHTML = "";
-      list.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "peptide-card";
-        card.innerHTML = `
-          <img src="${p.image}" />
-          <h2>${p.name}</h2>
-          <p>${p.desc}</p>
-          <p><strong>Dosing:</strong> ${p.dosage}</p>
-          <p class="price-line">Retail: $${p.price}</p>
-          <p class="deal">Our Deal: $${p.deal}</p>
-          <button class="buy-btn">Buy Now</button>
-        `;
-        container.appendChild(card);
-      });
+    function toggleAI() {
+      const popup = document.getElementById("aiPopup");
+      popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+      popup.style.flexDirection = "column";
     }
 
-    displayPeptides(peptides);
+    displayPeptides(peptides, currentPage);
   </script>
 </body>
 </html>
