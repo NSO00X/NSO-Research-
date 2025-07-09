@@ -3,241 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NSO Research — Premium Peptides</title>
+  <title>NSO Peptide Calculator & Guide</title>
   <style>
-    :root {
-      --accent-blue: #007aff;
-      --bg-light: #ffffff;
-      --bg-dark: #12121c;
-      --text-light: #111111;
-      --text-dark: #f0f0f0;
-      --card-bg-light: #f9f9f9;
-      --card-bg-dark: #1e1e2f;
-    }
-
-    * {
-      transition: all 0.3s ease;
-      box-sizing: border-box;
-    }
-
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-light);
-      color: var(--text-light);
+      background: #f8f9fa;
+      color: #212529;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: var(--accent-blue);
-      margin-bottom: 10px;
-    }
-
-    .tagline {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 14px;
-      color: #777;
-    }
-
-    .search {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      margin-bottom: 30px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .peptide-card {
-      background: var(--card-bg-light);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .peptide-card img {
-      width: 100%;
-      height: 160px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-
-    .peptide-card h2 {
-      margin: 10px 0 5px;
-      color: var(--accent-blue);
-      font-size: 16px;
-    }
-
-    .price-line {
-      text-decoration: line-through;
-      color: #999;
-      font-size: 14px;
-    }
-
-    .deal {
-      font-weight: bold;
-      color: #00c37a;
-      margin-bottom: 10px;
-    }
-
-    .buy-btn {
-      padding: 8px 12px;
-      background: var(--accent-blue);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
-    }
-
-    /* AI Assistant Button */
-    .ai-assistant-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--accent-blue);
+    header {
+      background: #222;
       color: white;
-      padding: 10px 16px;
-      border-radius: 50px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      padding: 1em;
+      text-align: center;
     }
-
-    .assistant-window {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 300px;
+    .container {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+    .calc-box, .peptide-box {
       background: white;
-      color: #111;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      padding: 15px;
-      z-index: 999;
-      display: none;
-    }
-
-    .assistant-window h4 {
-      margin-top: 0;
-      font-size: 16px;
-    }
-
-    .assistant-window input {
-      width: 100%;
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #ddd;
       border-radius: 8px;
-      margin-top: 10px;
+      padding: 1.5em;
+      margin-bottom: 2em;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
-    .assistant-response {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
+    label {
+      display: block;
+      margin-top: 1em;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.25em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .output {
+      margin-top: 1em;
+      padding: 1em;
+      background: #e9ecef;
+      border-radius: 4px;
+    }
+    .peptide-card {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 1em;
+      border-radius: 8px;
+      margin-bottom: 1em;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>🧬 NSO Peptide Calculator & Encyclopedia</h1>
+  </header>
+
   <div class="container">
-    <h1>NSO Research</h1>
-    <p class="tagline">Premium quality. Research backed. Trusted by thousands.</p>
-    <input class="search" type="text" placeholder="Search peptides..." onkeyup="filterPeptides(this.value)">
-    <div class="grid" id="peptide-list"></div>
-  </div>
+    <div class="calc-box">
+      <h2>Peptide Calculator</h2>
+      <label for="peptideAmount">Peptide Amount (mg):</label>
+      <input type="number" id="peptideAmount" placeholder="e.g. 10">
 
-  <!-- AI Assistant Button -->
-  <div class="ai-assistant-btn" onclick="toggleAssistant()">💬 AI Help</div>
+      <label for="bacWater">BAC Water Added (mL):</label>
+      <input type="number" id="bacWater" placeholder="e.g. 2">
 
-  <!-- Assistant Window -->
-  <div class="assistant-window" id="assistant">
-    <h4>NSO Assistant</h4>
-    <input type="text" placeholder="Ask me anything..." onkeydown="handleAssistant(event)">
-    <div class="assistant-response" id="response"></div>
+      <label for="dose">Desired Dose (mcg):</label>
+      <input type="number" id="dose" placeholder="e.g. 250">
+
+      <div class="output" id="results">
+        Enter values to see your results...
+      </div>
+    </div>
+
+    <div class="peptide-box">
+      <h2>Peptide Encyclopedia</h2>
+
+      <div class="peptide-card">
+        <h3>💪 CJC-1295 + Ipamorelin</h3>
+        <p><strong>Use:</strong> Growth hormone stimulation, fat loss, recovery</p>
+        <p><strong>Typical Dose:</strong> 250–500mcg at night</p>
+        <p><strong>Route:</strong> SubQ injection</p>
+        <p><strong>Side Effects:</strong> Tingling, hunger, water retention</p>
+        <p><strong>Storage:</strong> Fridge after mixing</p>
+      </div>
+
+      <!-- Add more peptides here -->
+    </div>
   </div>
 
   <script>
-    const peptides = Array.from({length: 20}).map((_, i) => {
-      const basePrice = 100 + i * 2;
-      const discount = (basePrice * 0.75).toFixed(2);
-      return {
-        name: "Peptide " + (i + 1),
-        image: "https://via.placeholder.com/300x160?text=Peptide+" + (i + 1),
-        desc: "Premium research peptide for performance and recovery.",
-        dosage: "250–500mcg/day",
-        price: basePrice.toFixed(2),
-        deal: discount
-      };
-    });
+    const peptideInput = document.getElementById('peptideAmount');
+    const bacInput = document.getElementById('bacWater');
+    const doseInput = document.getElementById('dose');
+    const resultsBox = document.getElementById('results');
 
-    function displayPeptides(list) {
-      const container = document.getElementById("peptide-list");
-      container.innerHTML = "";
-      list.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "peptide-card";
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <h2>${p.name}</h2>
-          <p>${p.desc}</p>
-          <p><strong>Dosing:</strong> ${p.dosage}</p>
-          <p class="price-line">$${p.price}</p>
-          <p class="deal">Our Deal: $${p.deal}</p>
-          <button class="buy-btn">Buy Now</button>
-        `;
-        container.appendChild(card);
-      });
-    }
+    function updateResults() {
+      const mg = parseFloat(peptideInput.value);
+      const mL = parseFloat(bacInput.value);
+      const mcg = parseFloat(doseInput.value);
 
-    function filterPeptides(query) {
-      const filtered = peptides.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-      );
-      displayPeptides(filtered);
-    }
-
-    displayPeptides(peptides);
-
-    // Assistant Logic
-    function toggleAssistant() {
-      const assistant = document.getElementById("assistant");
-      assistant.style.display = assistant.style.display === "block" ? "none" : "block";
-    }
-
-    function handleAssistant(event) {
-      if (event.key === "Enter") {
-        const input = event.target.value.toLowerCase();
-        const response = document.getElementById("response");
-        if (input.includes("dose") || input.includes("dosing")) {
-          response.innerText = "Typical dosing is 250–500mcg per day depending on the peptide.";
-        } else if (input.includes("buy") || input.includes("order")) {
-          response.innerText = "Click the Buy Now button under any peptide to add it to your cart.";
-        } else if (input.includes("ghk") || input.includes("bpc")) {
-          response.innerText = "GHK-Cu is a copper peptide known for skin regeneration, while BPC-157 supports tissue healing.";
-        } else {
-          response.innerText = "I'm still learning! Please rephrase your question.";
-        }
-        event.target.value = "";
+      if (!mg || !mL || !mcg) {
+        resultsBox.innerHTML = "Please enter all values.";
+        return;
       }
+
+      const concentration = mg / mL; // mg per mL
+      const doseInML = mcg / 1000 / concentration;
+      const dosesPerVial = (mg * 1000) / mcg;
+
+      resultsBox.innerHTML = `
+        <strong>Concentration:</strong> ${concentration.toFixed(2)} mg/mL<br/>
+        <strong>Inject:</strong> ${doseInML.toFixed(3)} mL (${(doseInML * 100).toFixed(1)} units on insulin syringe)<br/>
+        <strong>Total Doses per Vial:</strong> ~${dosesPerVial.toFixed(1)}
+      `;
     }
+
+    peptideInput.addEventListener('input', updateResults);
+    bacInput.addEventListener('input', updateResults);
+    doseInput.addEventListener('input', updateResults);
   </script>
 </body>
 </html>
